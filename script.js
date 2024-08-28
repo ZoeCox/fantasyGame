@@ -3,14 +3,7 @@ const context = canvas.getContext("2d");
 canvas.height = 500;
 canvas.width = 500;
 
-const hobbit = {
-    xCoord: 25,
-    yCoord: 385, 
-    height: 125, 
-    width: 125,
-    speed: 0.15,
-    moving: false
-}
+const footstepSound = document.querySelector(".footstep-sound");
 
 const treeBackground = new Image();
 treeBackground.ready = false;
@@ -67,10 +60,17 @@ hobbitRun10.ready = false;
 hobbitRun10.onload = checkIfReady;
 hobbitRun10.src = "./hobbitSprite/hobbitRun10.png";
 
-const hobbitRunFrames = [hobbitRun1, hobbitRun2, hobbitRun3, hobbitRun4, hobbitRun5, 
-    hobbitRun6, hobbitRun7, hobbitRun8, hobbitRun9, hobbitRun10]
+const hobbit = {
+  xCoord: 25,
+  yCoord: 385,
+  height: 125,
+  width: 125,
+  speed: 0.1,
+  moving: false,
+  run: hobbitRun1,
+};
 
-function backGroundScroll () {};
+function backGroundScroll() {}
 
 const keyClick = {};
 
@@ -79,68 +79,82 @@ document.addEventListener(
   function (event) {
     keyClick[event.key] = true;
   },
-  false,
+  false
 );
 
-function playerMove () {
-    if("ArrowLeft" in keyClick) {
-        hobbit.xCoord -= hobbit.speed; 
-        hobbit.moving = true;
+let countdown = 600;
+
+function hobbitJumpReset() {
+  hobbit.yCoord = 385;
+  hobbit.run = hobbitRun1;
+}
+
+function playerMove() {
+  function timerReduce() {
+    countdown = countdown - 60;
+  }
+
+  if ("ArrowLeft" in keyClick) {
+    hobbit.moving = true;
+    hobbit.xCoord -= hobbit.speed;
+  }
+  if ("ArrowRight" in keyClick) {
+    hobbit.moving = true;
+    hobbit.xCoord += hobbit.speed;
+  }
+  //   if (hobbit.moving) {
+  //     if (hobbit.run === hobbitRun1) {
+  //       hobbit.run = hobbitRun7;
+  //     } else {
+  //       hobbit.run = hobbitRun1;
+  //     }
+  //   }
+  if (" " in keyClick) {
+    let spacePressedIn = Date.now();
+    hobbit.yCoord = 365;
+    hobbit.run = hobbitRun7;
+    if ((hobbit.yCoord = 365 || Date.now() >= spacePressedIn + 500)) {
+      setTimeout(hobbitJumpReset, 375);
     }
-    if("ArrowRight" in keyClick) {
-        hobbit.xCoord += hobbit.speed; 
-        hobbit.moving = true;
-    }
-    // if(hobbit.xCoord == canvas.width -50) {
-    //     hobbit.xCoord = 200;
+    //can get working this way so we know if spacebar held for a bit longer than jump length it ground the player
+    // if (hobbit.moving) {
+    //   footstepSound.play();
     // }
-    //sort out some form of edge collision detection
+  }
 }
 
 document.addEventListener(
-    "keyup",
-    function (event) {
-      delete keyClick[event.key];
-    },
-    false,
-    hobbit.moving = true
-  );
-  
-
-// function hobbitRunning () {
-//   for(let i=0; i < hobbitRunFrames.length; i++) {
-//         context.drawImage(hobbitRunFrames, hobbit.xCoord, hobbit.yCoord, hobbit.width, hobbit.height);
-//     }
-//     requestAnimationFrame(hobbitRunning)
-// }
-
-
+  "keyup",
+  function (event) {
+    delete keyClick[event.key];
+    hobbit.moving = false;
+  },
+  false
+);
 
 function checkIfReady() {
-    this.ready = true
-    playGame();
+  this.ready = true;
+  playGame();
 }
 
 function playGame() {
-    playerMove();
-    // if(hobbit.moving = true) {
-    //     requestAnimationFrame(hobbitRunning)
-    // }
-    render()
-    requestAnimationFrame(playGame);
+  playerMove();
+  render();
+  requestAnimationFrame(playGame);
 }
 
 function render() {
-    context.fillStyle = "antiqueWhite";
-    context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillStyle = "antiqueWhite";
+  context.fillRect(0, 0, canvas.width, canvas.height);
 
-    context.drawImage(treeBackground, 0, 0, 1000, 500);
-    //drawing background 
-    context.drawImage(hobbitRun1, hobbit.xCoord, hobbit.yCoord, hobbit.width, hobbit.height);
-    requestAnimationFrame(hobbitRunning)
+  context.drawImage(treeBackground, 0, 0, 1000, 500);
+  context.drawImage(
+    hobbit.run,
+    hobbit.xCoord,
+    hobbit.yCoord,
+    hobbit.width,
+    hobbit.height
+  );
 }
-
-console.log(hobbitRunFrames);
-
 
 document.body.appendChild(canvas);
