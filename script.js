@@ -10,10 +10,15 @@ treeBackground.ready = false;
 treeBackground.onload = checkIfReady;
 treeBackground.src = "./backGround/treeBackground.png";
 
-const hobbitRun1 = new Image();
-hobbitRun1.ready = false;
-hobbitRun1.onload = checkIfReady;
-hobbitRun1.src = "./hobbitSprite/hobbitRun1.png";
+const hobbitRun1Right = new Image();
+hobbitRun1Right.ready = false;
+hobbitRun1Right.onload = checkIfReady;
+hobbitRun1Right.src = "./hobbitSprite/hobbitRun1Right.png";
+
+const hobbitRun1Left = new Image();
+hobbitRun1Left.ready = false;
+hobbitRun1Left.onload = checkIfReady;
+hobbitRun1Left.src = "./hobbitSprite/hobbitRun1Left.png";
 
 const hobbitRun2 = new Image();
 hobbitRun2.ready = false;
@@ -40,10 +45,15 @@ hobbitRun6.ready = false;
 hobbitRun6.onload = checkIfReady;
 hobbitRun6.src = "./hobbitSprite/hobbitRun6.png";
 
-const hobbitRun7 = new Image();
-hobbitRun7.ready = false;
-hobbitRun7.onload = checkIfReady;
-hobbitRun7.src = "./hobbitSprite/hobbitRun7.png";
+const hobbitRun7Right = new Image();
+hobbitRun7Right.ready = false;
+hobbitRun7Right.onload = checkIfReady;
+hobbitRun7Right.src = "./hobbitSprite/hobbitRun7Right.png";
+
+const hobbitRun7Left = new Image();
+hobbitRun7Left.ready = false;
+hobbitRun7Left.onload = checkIfReady;
+hobbitRun7Left.src = "./hobbitSprite/hobbitRun7Left.png";
 
 const hobbitRun8 = new Image();
 hobbitRun8.ready = false;
@@ -65,9 +75,9 @@ const hobbit = {
   yCoord: 385,
   height: 125,
   width: 125,
-  speed: 0.1,
+  speed: 0.2,
   moving: false,
-  run: hobbitRun1,
+  run: hobbitRun1Right,
 };
 
 function backGroundScroll() {}
@@ -84,9 +94,14 @@ document.addEventListener(
 
 let countdown = 600;
 
-function hobbitJumpReset() {
+function hobbitJumpResetRight() {
   hobbit.yCoord = 385;
-  hobbit.run = hobbitRun1;
+  hobbit.run = hobbitRun1Right;
+}
+
+function hobbitJumpResetLeft() {
+  hobbit.yCoord = 385;
+  hobbit.run = hobbitRun1Left;
 }
 
 function playerMove() {
@@ -96,10 +111,12 @@ function playerMove() {
 
   if ("ArrowLeft" in keyClick) {
     hobbit.moving = true;
+    hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
   }
   if ("ArrowRight" in keyClick) {
     hobbit.moving = true;
+    hobbit.run = hobbitRun1Right;
     hobbit.xCoord += hobbit.speed;
   }
   //   if (hobbit.moving) {
@@ -112,10 +129,17 @@ function playerMove() {
   if (" " in keyClick) {
     let spacePressedIn = Date.now();
     hobbit.yCoord = 365;
-    hobbit.run = hobbitRun7;
-    if ((hobbit.yCoord = 365 || Date.now() >= spacePressedIn + 500)) {
-      setTimeout(hobbitJumpReset, 375);
+    hobbit.run = hobbitRun7Right;
+    if (" " in keyClick && "ArrowLeft" in keyClick) {
+      hobbit.run = hobbitRun7Left;
     }
+    if ((hobbit.yCoord = 365 || Date.now() >= spacePressedIn + 500)) {
+      setTimeout(hobbitJumpResetRight, 375);
+    }
+    if ((hobbit.yCoord = 365 && hobbit.run === hobbitRun7Left)) {
+      setTimeout(hobbitJumpResetLeft, 375);
+    }
+
     //can get working this way so we know if spacebar held for a bit longer than jump length it ground the player
     // if (hobbit.moving) {
     //   footstepSound.play();
