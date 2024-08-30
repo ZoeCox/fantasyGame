@@ -276,11 +276,19 @@ function playerMove() {
     hobbit.xCoord += hobbit.speed;
   }
   if (" " in keyClick) {
+    let jumpTime = Date.now();
     if (hobbit.run === hobbitRun1Left && hobbit.yCoord === 385) {
       hobbit.yCoord = 365;
       hobbit.run = hobbitRun7Left;
       if ((hobbit.yCoord = 365)) {
         setTimeout(hobbitJumpResetLeft, 375);
+      }
+      if (
+        " " in keyClick &&
+        Date.now() - jumpTime >= 500 &&
+        hobbit.yCord === 365
+      ) {
+        hobbit.hobbitJumpResetLeft();
       }
     }
 
@@ -290,6 +298,13 @@ function playerMove() {
 
       if ((hobbit.yCoord = 365)) {
         setTimeout(hobbitJumpResetRight, 375);
+      }
+      if (
+        " " in keyClick &&
+        Date.now() - jumpTime >= 500 &&
+        hobbit.yCoord === 365
+      ) {
+        hobbit.hobbitJumpResetRight();
       }
     }
     if ("ArrowRight" in keyClick && " " in keyClick) {
