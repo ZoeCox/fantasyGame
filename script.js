@@ -60,16 +60,6 @@ hobbitRun5Left.ready = false;
 hobbitRun5Left.onload = checkIfReady;
 hobbitRun5Left.src = "./hobbitSprite/hobbitRun5Left.png";
 
-const hobbitRun6Right = new Image();
-hobbitRun6Right.ready = false;
-hobbitRun6Right.onload = checkIfReady;
-hobbitRun6Right.src = "./hobbitSprite/hobbitRun6Right.png";
-
-const hobbitRun6Left = new Image();
-hobbitRun6Left.ready = false;
-hobbitRun6Left.onload = checkIfReady;
-hobbitRun6Left.src = "./hobbitSprite/hobbitRun6Left.png";
-
 const hobbitRun7Right = new Image();
 hobbitRun7Right.ready = false;
 hobbitRun7Right.onload = checkIfReady;
@@ -80,36 +70,6 @@ hobbitRun7Left.ready = false;
 hobbitRun7Left.onload = checkIfReady;
 hobbitRun7Left.src = "./hobbitSprite/hobbitRun7Left.png";
 
-const hobbitRun8Right = new Image();
-hobbitRun8Right.ready = false;
-hobbitRun8Right.onload = checkIfReady;
-hobbitRun8Right.src = "./hobbitSprite/hobbitRun8Right.png";
-
-const hobbitRun8Left = new Image();
-hobbitRun8Left.ready = false;
-hobbitRun8Left.onload = checkIfReady;
-hobbitRun8Left.src = "./hobbitSprite/hobbitRun8Left.png";
-
-const hobbitRun9Right = new Image();
-hobbitRun9Right.ready = false;
-hobbitRun9Right.onload = checkIfReady;
-hobbitRun9Right.src = "./hobbitSprite/hobbitRun9Right.png";
-
-const hobbitRun9Left = new Image();
-hobbitRun9Left.ready = false;
-hobbitRun9Left.onload = checkIfReady;
-hobbitRun9Left.src = "./hobbitSprite/hobbitRun9Left.png";
-
-const hobbitRun10Right = new Image();
-hobbitRun10Right.ready = false;
-hobbitRun10Right.onload = checkIfReady;
-hobbitRun10Right.src = "./hobbitSprite/hobbitRun10Right.png";
-
-const hobbitRun10Left = new Image();
-hobbitRun10Left.ready = false;
-hobbitRun10Left.onload = checkIfReady;
-hobbitRun10Left.src = "./hobbitSprite/hobbitRun10Left.png";
-
 //still images for hobbit/movement frames
 
 const hobbit = {
@@ -119,6 +79,7 @@ const hobbit = {
   width: 125,
   speed: 0.09,
   moving: false,
+  static: true,
   run: hobbitRun1Right,
 };
 
@@ -134,107 +95,60 @@ document.addEventListener(
 
 function hobbitRunCycle1Right() {
   hobbit.run = hobbitRun2Right;
-  hobbit.run = hobbitRun2Right;
 }
+
 function hobbitRunCycle2Right() {
-  hobbit.run = hobbitRun3Right;
   hobbit.run = hobbitRun3Right;
 }
 
 function hobbitRunCycle3Right() {
   hobbit.run = hobbitRun4Right;
-  hobbit.run = hobbitRun4Right;
 }
 
 function hobbitRunCycle4Right() {
   hobbit.run = hobbitRun5Right;
-  hobbit.run = hobbitRun5Right;
 }
 
 function hobbitRunCycle5Right() {
-  hobbit.run = hobbitRun6Right;
-  hobbit.run = hobbitRun6Right;
-}
-function hobbitRunCycle6Right() {
-  hobbit.run = hobbitRun7Right;
-  hobbit.run = hobbitRun7Right;
-}
-function hobbitRunCycle7Right() {
-  hobbit.run = hobbitRun8Right;
-  hobbit.run = hobbitRun8Right;
-}
-function hobbitRunCycle8Right() {
-  hobbit.run = hobbitRun9Right;
-  hobbit.run = hobbitRun9Right;
-}
-
-function hobbitRunCycle9Right() {
-  hobbit.run = hobbitRun10Right;
-  hobbit.run = hobbitRun10Right;
-}
-
-function hobbitRunCycle10Right() {
-  hobbit.run = hobbitRun1Right;
   hobbit.run = hobbitRun1Right;
 }
+
+const movementArrRight = [
+  hobbitRun1Right,
+  hobbitRun2Right,
+  hobbitRun3Right,
+  hobbitRun4Right,
+  hobbitRun5Right,
+];
 
 function hobbitRunAnimateRight() {
-  setTimeout(hobbitRunCycle1Right, 200);
-  setTimeout(hobbitRunCycle2Right, 200);
-  setTimeout(hobbitRunCycle3Right, 200);
-  setTimeout(hobbitRunCycle4Right, 200);
-  setTimeout(hobbitRunCycle5Right, 200);
-  setTimeout(hobbitRunCycle6Right, 200);
-  setTimeout(hobbitRunCycle7Right, 200);
-  setTimeout(hobbitRunCycle8Right, 200);
-  setTimeout(hobbitRunCycle9Right, 200);
-  setTimeout(hobbitRunCycle10Right, 200);
+  for (let i = 0; i < 60; i++) {
+    hobbit.run = movementArrRight[i];
+  }
+  // setTimeout(hobbitRunCycle1Right, 500);
+  // setTimeout(hobbitRunCycle2Right, 500);
+  // setTimeout(hobbitRunCycle3Right, 500);
+  // setTimeout(hobbitRunCycle4Right, 500);
+  // setTimeout(hobbitRunCycle5Right, 500);
 }
 //right running animation
 
 function hobbitRunCycle1Left() {
   hobbit.run = hobbitRun2Left;
-  hobbit.run = hobbitRun2Left;
 }
 function hobbitRunCycle2Left() {
-  hobbit.run = hobbitRun3Left;
   hobbit.run = hobbitRun3Left;
 }
 
 function hobbitRunCycle3Left() {
   hobbit.run = hobbitRun4Left;
-  hobbit.run = hobbitRun4Left;
 }
 
 function hobbitRunCycle4Left() {
   hobbit.run = hobbitRun5Left;
-  hobbit.run = hobbitRun5Left;
 }
 
 function hobbitRunCycle5Left() {
-  hobbit.run = hobbitRun6Left;
-  hobbit.run = hobbitRun6Left;
-}
-function hobbitRunCycle6Left() {
-  hobbit.run = hobbitRun7Left;
-  hobbit.run = hobbitRun7Left;
-}
-function hobbitRunCycle7Left() {
-  hobbit.run = hobbitRun8Left;
-  hobbit.run = hobbitRun8Left;
-}
-function hobbitRunCycle8Left() {
-  hobbit.run = hobbitRun9Left;
-  hobbit.run = hobbitRun9Left;
-}
-
-function hobbitRunCycle9Left() {
-  hobbit.run = hobbitRun10Left;
-  hobbit.run = hobbitRun10Left;
-}
-
-function hobbitRunCycle10Left() {
-  hobbit.run = hobbitRun1Left;
   hobbit.run = hobbitRun1Left;
 }
 
@@ -244,11 +158,6 @@ function hobbitRunAnimateLeft() {
   setTimeout(hobbitRunCycle3Left, 200);
   setTimeout(hobbitRunCycle4Left, 200);
   setTimeout(hobbitRunCycle5Left, 200);
-  setTimeout(hobbitRunCycle6Left, 200);
-  setTimeout(hobbitRunCycle7Left, 200);
-  setTimeout(hobbitRunCycle8Left, 200);
-  setTimeout(hobbitRunCycle9Left, 200);
-  setTimeout(hobbitRunCycle10Left, 200);
 }
 //left running animation
 
@@ -264,12 +173,14 @@ function hobbitJumpResetRight() {
 
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
+    hobbit.static = false;
     hobbit.moving = true;
     setTimeout(hobbitRunAnimateLeft, 50);
     // hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
   }
   if ("ArrowRight" in keyClick) {
+    hobbit.static = false;
     hobbit.moving = true;
     // hobbit.run = hobbitRun1Right;
     setTimeout(hobbitRunAnimateRight, 50);
@@ -335,6 +246,7 @@ document.addEventListener(
   function (event) {
     delete keyClick[event.key];
     hobbit.moving = false;
+    hobbit.static = true;
   },
   false
 );
@@ -362,6 +274,10 @@ function render() {
     hobbit.width,
     hobbit.height
   );
+  if (hobbit.static) {
+    // setTimeout(hobbitRunAnimateRight, 100);
+    hobbitRunAnimateRight();
+  }
 }
 
 document.body.appendChild(canvas);
