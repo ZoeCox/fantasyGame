@@ -93,64 +93,25 @@ document.addEventListener(
   false
 );
 
-function hobbitRunCycle1Right() {
-  hobbit.run = hobbitRun2Right;
-}
-
-function hobbitRunCycle2Right() {
-  hobbit.run = hobbitRun3Right;
-}
-
-function hobbitRunCycle3Right() {
-  hobbit.run = hobbitRun4Right;
-}
-
-function hobbitRunCycle4Right() {
-  hobbit.run = hobbitRun5Right;
-}
-
-function hobbitRunCycle5Right() {
-  hobbit.run = hobbitRun1Right;
-}
-
 const movementArrRight = [
   hobbitRun1Right,
   hobbitRun2Right,
   hobbitRun3Right,
   hobbitRun4Right,
   hobbitRun5Right,
+  hobbitRun1Right,
 ];
 
 function hobbitRunAnimateRight() {
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < movementArrRight.length; i++) {
     hobbit.run = movementArrRight[i];
+    const moveFrame = () => {
+      hobbit.run = movementArrRight[i];
+    };
+    setTimeout(moveFrame, i * 200);
   }
-  // setTimeout(hobbitRunCycle1Right, 500);
-  // setTimeout(hobbitRunCycle2Right, 500);
-  // setTimeout(hobbitRunCycle3Right, 500);
-  // setTimeout(hobbitRunCycle4Right, 500);
-  // setTimeout(hobbitRunCycle5Right, 500);
 }
 //right running animation
-
-function hobbitRunCycle1Left() {
-  hobbit.run = hobbitRun2Left;
-}
-function hobbitRunCycle2Left() {
-  hobbit.run = hobbitRun3Left;
-}
-
-function hobbitRunCycle3Left() {
-  hobbit.run = hobbitRun4Left;
-}
-
-function hobbitRunCycle4Left() {
-  hobbit.run = hobbitRun5Left;
-}
-
-function hobbitRunCycle5Left() {
-  hobbit.run = hobbitRun1Left;
-}
 
 function hobbitRunAnimateLeft() {
   setTimeout(hobbitRunCycle1Left, 200);
@@ -183,7 +144,7 @@ function playerMove() {
     hobbit.static = false;
     hobbit.moving = true;
     // hobbit.run = hobbitRun1Right;
-    setTimeout(hobbitRunAnimateRight, 50);
+    // setTimeout(hobbitRunAnimateRight, 50);
     hobbit.xCoord += hobbit.speed;
   }
   if (" " in keyClick) {
@@ -259,6 +220,9 @@ function checkIfReady() {
 function playGame() {
   playerMove();
   render();
+  if (hobbit.static) {
+    setInterval(hobbitRunAnimateRight, 200);
+  }
   requestAnimationFrame(playGame);
 }
 
@@ -274,10 +238,6 @@ function render() {
     hobbit.width,
     hobbit.height
   );
-  if (hobbit.static) {
-    // setTimeout(hobbitRunAnimateRight, 100);
-    hobbitRunAnimateRight();
-  }
 }
 
 document.body.appendChild(canvas);
