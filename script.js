@@ -102,7 +102,29 @@ const movementArrRight = [
   hobbitRun1Right,
 ];
 
+const movementArrLeft = [
+  hobbitRun1Left,
+  hobbitRun2Left,
+  hobbitRun3Left,
+  hobbitRun4Left,
+  hobbitRun5Left,
+  hobbitRun1Left,
+];
+
+function hobbitAnimateIdle() {
+  console.log("hobbit is idle");
+  for (let i = 0; i < movementArrRight.length; i++) {
+    hobbit.run = movementArrRight[i];
+    const moveFrame = () => {
+      hobbit.run = movementArrRight[i];
+    };
+    setTimeout(moveFrame, i * 200);
+  }
+}
+//idle animation
+
 function hobbitRunAnimateRight() {
+  console.log("hobbit is going right");
   for (let i = 0; i < movementArrRight.length; i++) {
     hobbit.run = movementArrRight[i];
     const moveFrame = () => {
@@ -114,11 +136,14 @@ function hobbitRunAnimateRight() {
 //right running animation
 
 function hobbitRunAnimateLeft() {
-  setTimeout(hobbitRunCycle1Left, 200);
-  setTimeout(hobbitRunCycle2Left, 200);
-  setTimeout(hobbitRunCycle3Left, 200);
-  setTimeout(hobbitRunCycle4Left, 200);
-  setTimeout(hobbitRunCycle5Left, 200);
+  console.log("hobbit is going left");
+  for (let i = 0; i < movementArrLeft.length; i++) {
+    hobbit.run = movementArrLeft[i];
+    const moveFrame = () => {
+      hobbit.run = movementArrLeft[i];
+    };
+    setTimeout(moveFrame, i * 200);
+  }
 }
 //left running animation
 
@@ -136,31 +161,20 @@ function playerMove() {
   if ("ArrowLeft" in keyClick) {
     hobbit.static = false;
     hobbit.moving = true;
-    setTimeout(hobbitRunAnimateLeft, 50);
-    // hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
   }
   if ("ArrowRight" in keyClick) {
     hobbit.static = false;
     hobbit.moving = true;
-    // hobbit.run = hobbitRun1Right;
-    // setTimeout(hobbitRunAnimateRight, 50);
     hobbit.xCoord += hobbit.speed;
   }
   if (" " in keyClick) {
-    let jumpTime = Date.now();
+    hobbit.static = false;
     if (hobbit.run === hobbitRun1Left && hobbit.yCoord === 385) {
       hobbit.yCoord = 365;
       hobbit.run = hobbitRun7Left;
       if ((hobbit.yCoord = 365)) {
         setTimeout(hobbitJumpResetLeft, 375);
-      }
-      if (
-        " " in keyClick &&
-        Date.now() - jumpTime >= 500 &&
-        hobbit.yCord === 365
-      ) {
-        hobbit.hobbitJumpResetLeft();
       }
     }
 
@@ -170,13 +184,6 @@ function playerMove() {
 
       if ((hobbit.yCoord = 365)) {
         setTimeout(hobbitJumpResetRight, 375);
-      }
-      if (
-        " " in keyClick &&
-        Date.now() - jumpTime >= 500 &&
-        hobbit.yCoord === 365
-      ) {
-        hobbit.hobbitJumpResetRight();
       }
     }
     if ("ArrowRight" in keyClick && " " in keyClick) {
@@ -213,6 +220,17 @@ document.addEventListener(
 );
 
 function checkIfReady() {
+  if (hobbit.static && !hobbit.moving) {
+    const hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1200);
+  }
+  if ("ArrowLeft" in keyClick) {
+    clearInterval(hobbitIdleInterval);
+    const hobbitRightInterval = setInterval(hobbitRunAnimateRight, 600);
+  }
+  if ("ArrowRight" in keyClick) {
+    clearInterval(hobbitIdleInterval);
+    const hobbitRightInterval = setInterval(hobbitRunAnimateRight, 600);
+  }
   this.ready = true;
   playGame();
 }
@@ -220,9 +238,6 @@ function checkIfReady() {
 function playGame() {
   playerMove();
   render();
-  if (hobbit.static) {
-    setInterval(hobbitRunAnimateRight, 200);
-  }
   requestAnimationFrame(playGame);
 }
 
