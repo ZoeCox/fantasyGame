@@ -77,21 +77,11 @@ const hobbit = {
   yCoord: 385,
   height: 125,
   width: 125,
-  speed: 0.09,
+  speed: 0.1,
   moving: false,
   static: true,
   run: hobbitRun1Right,
 };
-
-const keyClick = {};
-
-document.addEventListener(
-  "keydown",
-  function (event) {
-    keyClick[event.key] = true;
-  },
-  false
-);
 
 const movementArrIdle = [hobbitRun1Right, hobbitRun2Right, hobbitRun1Right];
 
@@ -122,101 +112,79 @@ function hobbitAnimateIdle() {
     setTimeout(moveFrame, i * 250);
   }
 }
+
+let hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
+
+console.log(hobbitIdleInterval);
+
 //idle animation
+
+let hobbitRunRightInterval;
 
 function hobbitRunAnimateRight() {
   console.log("hobbit is going right");
   for (let i = 0; i < movementArrRight.length; i++) {
-    // hobbit.run = movementArrRight[i];
     const moveFrame = () => {
       hobbit.run = movementArrRight[i];
-    };
-    setTimeout(moveFrame, i * 700);
-  }
-}
-//right running animation
-
-function hobbitRunAnimateLeft() {
-  console.log("hobbit is going left");
-  for (let i = 0; i < movementArrLeft.length; i++) {
-    hobbit.run = movementArrLeft[i];
-    const moveFrame = () => {
-      hobbit.run = movementArrLeft[i];
     };
     setTimeout(moveFrame, i * 200);
   }
 }
+//right running animation
+
+// let hobbitRunLeftInterval = setInterval(function hobbitRunAnimateLeft() {
+//   console.log("hobbit is going left");
+//   for (let i = 0; i < movementArrLeft.length; i++) {
+//     const moveFrame = () => {
+//       hobbit.run = movementArrLeft[i];
+//     };
+//     setTimeout(moveFrame, i * 200);
+//   }
+// }, 1000);
 //left running animation
 
-// if ("ArrowRight" in keyClick) {
-//   hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1000);
-// }
+function closeRightInterval() {
+  console.log(typeof hobbitRunRightInterval, hobbitRunRightInterval);
 
-// hobbitRunRightInterval = setInterval(hobbitRunAnimateLeft, 1000);
-
-let hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
-let hobbitRunRightInterval;
-let hobbitRunLeftInterval;
-
-// if ("ArrowLeft" in keyClick) {
-//   clearInterval(hobbitRunRightInterval);
-//   hobbitRunLeftInterval = setInterval(hobbitRunAnimateLeft, 1000);
-// }
-
-function hobbitJumpResetLeft() {
-  hobbit.yCoord = 385;
-  hobbit.run = hobbitRun1Left;
+  console.log(clearInterval(hobbitRunRightInterval));
+  console.log("the right running has stopped");
 }
 
-function hobbitJumpResetRight() {
-  hobbit.yCoord = 385;
-  hobbit.run = hobbitRun1Right;
-}
+const keyClick = {};
+
+document.addEventListener(
+  "keydown",
+  function (event) {
+    keyClick[event.key] = true;
+    hobbit.moving = true;
+    clearInterval(hobbitIdleInterval);
+    if (hobbit.moving) {
+      hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1000);
+    }
+  },
+  false
+);
 
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
+    clearInterval(hobbitIdleInterval);
     hobbit.static = false;
     hobbit.moving = true;
     // hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
-    if (hobbit.moving) {
-      clearInterval(hobbitIdleInterval);
-    }
+  } else {
+    hobbit.static = true;
+    hobbit.moving = false;
   }
   if ("ArrowRight" in keyClick) {
+    clearInterval(hobbitIdleInterval);
     hobbit.static = false;
     hobbit.moving = true;
     hobbit.xCoord += hobbit.speed;
-    if (hobbit.moving) {
-      clearInterval(hobbitIdleInterval);
-    }
+  } else {
+    hobbit.static = true;
+    hobbit.moving = false;
   }
-  if (" " in keyClick) {
-    hobbit.static = false;
-    if (hobbit.run === hobbitRun1Left && hobbit.yCoord === 385) {
-      hobbit.yCoord = 365;
-      hobbit.run = hobbitRun7Left;
-      if ((hobbit.yCoord = 365)) {
-        setTimeout(hobbitJumpResetLeft, 375);
-      }
-    }
-
-    if (hobbit.run === hobbitRun1Right && hobbit.yCoord === 385) {
-      hobbit.yCoord = 365;
-      hobbit.run = hobbitRun7Right;
-
-      if ((hobbit.yCoord = 365)) {
-        setTimeout(hobbitJumpResetRight, 375);
-      }
-    }
-    if ("ArrowRight" in keyClick && " " in keyClick) {
-      hobbit.run = hobbitRun7Right;
-    }
-    if ("ArrowLeft" in keyClick && " " in keyClick) {
-      hobbit.run = hobbitRun7Left;
-    }
-  }
-  //jump handling -- but add in a jump timeout
   const hobbitLeadingRight = hobbit.xCoord + 70;
   const hobbitLeadingLeft = hobbit.xCoord + 60;
   const doesHobCollideRight = hobbitLeadingRight >= canvas.width;
@@ -232,20 +200,14 @@ function playerMove() {
   //edge detection
 }
 
-if (hobbit.moving) {
-  hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1200);
-}
-
 document.addEventListener(
   "keyup",
   function (event) {
     delete keyClick[event.key];
+    console.log("key has been released");
+    closeRightInterval();
+    hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
     hobbit.moving = false;
-    hobbit.static = true;
-    if (hobbit.static) {
-      clearInterval(hobbitRunAnimateRight);
-      hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
-    }
   },
   false
 );
@@ -276,3 +238,42 @@ function render() {
 }
 
 document.body.appendChild(canvas);
+
+//jump logic etc - reinstate later
+
+// function hobbitJumpResetLeft() {
+//   hobbit.yCoord = 385;
+//   hobbit.run = hobbitRun1Left;
+// }
+
+// function hobbitJumpResetRight() {
+//   hobbit.yCoord = 385;
+//   hobbit.run = hobbitRun1Right;
+// }
+
+// if (" " in keyClick) {
+//   hobbit.static = false;
+//   if (hobbit.run === hobbitRun1Left && hobbit.yCoord === 385) {
+//     hobbit.yCoord = 365;
+//     hobbit.run = hobbitRun7Left;
+//     if ((hobbit.yCoord = 365)) {
+//       setTimeout(hobbitJumpResetLeft, 375);
+//     }
+//   }
+
+//   if (hobbit.run === hobbitRun1Right && hobbit.yCoord === 385) {
+//     hobbit.yCoord = 365;
+//     hobbit.run = hobbitRun7Right;
+
+//     if ((hobbit.yCoord = 365)) {
+//       setTimeout(hobbitJumpResetRight, 375);
+//     }
+//   }
+//   if ("ArrowRight" in keyClick && " " in keyClick) {
+//     hobbit.run = hobbitRun7Right;
+//   }
+//   if ("ArrowLeft" in keyClick && " " in keyClick) {
+//     hobbit.run = hobbitRun7Left;
+//   }
+// }
+// //jump handling -- but add in a jump timeout
