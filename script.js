@@ -113,13 +113,7 @@ function hobbitAnimateIdle() {
   }
 }
 
-let hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
-
-console.log(hobbitIdleInterval);
-
 //idle animation
-
-let hobbitRunRightInterval;
 
 function hobbitRunAnimateRight() {
   console.log("hobbit is going right");
@@ -130,6 +124,7 @@ function hobbitRunAnimateRight() {
     setTimeout(moveFrame, i * 200);
   }
 }
+
 //right running animation
 
 // let hobbitRunLeftInterval = setInterval(function hobbitRunAnimateLeft() {
@@ -143,11 +138,16 @@ function hobbitRunAnimateRight() {
 // }, 1000);
 //left running animation
 
-function closeRightInterval() {
-  console.log(typeof hobbitRunRightInterval, hobbitRunRightInterval);
+let hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
 
-  console.log(clearInterval(hobbitRunRightInterval));
+function closeRightInterval() {
+  clearInterval(hobbitRunInterval);
   console.log("the right running has stopped");
+}
+
+function startRightInterval() {
+  hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
+  console.log("the right running has started");
 }
 
 const keyClick = {};
@@ -157,34 +157,41 @@ document.addEventListener(
   function (event) {
     keyClick[event.key] = true;
     hobbit.moving = true;
-    clearInterval(hobbitIdleInterval);
-    if (hobbit.moving) {
-      hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1000);
-    }
   },
   false
 );
 
+// function zoeArrowCall() {
+//   if ("ArrowRight" in keyClick) {
+//     console.log("ZOE TEST");
+//   }
+// }
+
+// if ("ArrowLeft" in keyClick || "ArrowRight" in keyClick) {
+//   clearInterval(hobbitAnimateIdle);
+//   clearInterval(hobbitRunRightInterval);
+//   hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1000);
+
+//   //why won't this clear or work... is it to do with scope?? but then I don't want the animations to keep speeding up their own frame rates if i keep the scope locally, but then it is a bitch to switch between idle and running if i make the scope wider...?
+// }
+
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
-    clearInterval(hobbitIdleInterval);
+    clearInterval(hobbitRunInterval);
+    hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
     hobbit.static = false;
     hobbit.moving = true;
     // hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
-  } else {
-    hobbit.static = true;
-    hobbit.moving = false;
   }
   if ("ArrowRight" in keyClick) {
-    clearInterval(hobbitIdleInterval);
+    clearInterval(hobbitRunInterval);
+    hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
     hobbit.static = false;
     hobbit.moving = true;
     hobbit.xCoord += hobbit.speed;
-  } else {
-    hobbit.static = true;
-    hobbit.moving = false;
   }
+  //left and right movement
   const hobbitLeadingRight = hobbit.xCoord + 70;
   const hobbitLeadingLeft = hobbit.xCoord + 60;
   const doesHobCollideRight = hobbitLeadingRight >= canvas.width;
@@ -198,15 +205,31 @@ function playerMove() {
     hobbit.xCoord = hobbit.xCoord + 30;
   }
   //edge detection
+  if ((keyClick.key = false)) {
+    clearInterval(hobbitRunInterval);
+    console.log("no key pressed");
+    hobbitRunInterval = setInterval(hobbitAnimateIdle, 1000);
+  }
+
+  function hobbitJump() {
+    hobbit.yCoord = 365;
+    setTimeout(function () {
+      hobbit.yCoord = 385;
+    }, 300);
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === " ") {
+      hobbitJump();
+    }
+  });
+  //jump handling
 }
 
 document.addEventListener(
   "keyup",
   function (event) {
     delete keyClick[event.key];
-    console.log("key has been released");
-    closeRightInterval();
-    hobbitIdleInterval = setInterval(hobbitAnimateIdle, 1000);
     hobbit.moving = false;
   },
   false
@@ -218,6 +241,7 @@ function checkIfReady() {
 }
 
 function playGame() {
+  // zoeArrowCall();
   playerMove();
   render();
   requestAnimationFrame(playGame);
@@ -238,42 +262,3 @@ function render() {
 }
 
 document.body.appendChild(canvas);
-
-//jump logic etc - reinstate later
-
-// function hobbitJumpResetLeft() {
-//   hobbit.yCoord = 385;
-//   hobbit.run = hobbitRun1Left;
-// }
-
-// function hobbitJumpResetRight() {
-//   hobbit.yCoord = 385;
-//   hobbit.run = hobbitRun1Right;
-// }
-
-// if (" " in keyClick) {
-//   hobbit.static = false;
-//   if (hobbit.run === hobbitRun1Left && hobbit.yCoord === 385) {
-//     hobbit.yCoord = 365;
-//     hobbit.run = hobbitRun7Left;
-//     if ((hobbit.yCoord = 365)) {
-//       setTimeout(hobbitJumpResetLeft, 375);
-//     }
-//   }
-
-//   if (hobbit.run === hobbitRun1Right && hobbit.yCoord === 385) {
-//     hobbit.yCoord = 365;
-//     hobbit.run = hobbitRun7Right;
-
-//     if ((hobbit.yCoord = 365)) {
-//       setTimeout(hobbitJumpResetRight, 375);
-//     }
-//   }
-//   if ("ArrowRight" in keyClick && " " in keyClick) {
-//     hobbit.run = hobbitRun7Right;
-//   }
-//   if ("ArrowLeft" in keyClick && " " in keyClick) {
-//     hobbit.run = hobbitRun7Left;
-//   }
-// }
-// //jump handling -- but add in a jump timeout
