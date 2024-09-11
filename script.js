@@ -78,8 +78,8 @@ const hobbit = {
   height: 125,
   width: 125,
   speed: 0.1,
-  moving: false,
-  static: true,
+  movingRight: true,
+  movingLeft: false,
   run: hobbitRun1Right,
 };
 
@@ -112,7 +112,6 @@ function hobbitAnimateIdle() {
     setTimeout(moveFrame, i * 250);
   }
 }
-
 //idle animation
 
 function hobbitRunAnimateRight() {
@@ -124,31 +123,18 @@ function hobbitRunAnimateRight() {
     setTimeout(moveFrame, i * 200);
   }
 }
-
 //right running animation
 
-// let hobbitRunLeftInterval = setInterval(function hobbitRunAnimateLeft() {
-//   console.log("hobbit is going left");
-//   for (let i = 0; i < movementArrLeft.length; i++) {
-//     const moveFrame = () => {
-//       hobbit.run = movementArrLeft[i];
-//     };
-//     setTimeout(moveFrame, i * 200);
-//   }
-// }, 1000);
-//left running animation
-
-let hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-
-function closeRightInterval() {
-  clearInterval(hobbitRunInterval);
-  console.log("the right running has stopped");
+function hobbitRunAnimateLeft() {
+  console.log("hobbit is going left");
+  for (let i = 0; i < movementArrLeft.length; i++) {
+    const moveFrame = () => {
+      hobbit.run = movementArrLeft[i];
+    };
+    setTimeout(moveFrame, i * 200);
+  }
 }
-
-function startRightInterval() {
-  hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-  console.log("the right running has started");
-}
+// left running animation
 
 const keyClick = {};
 
@@ -161,37 +147,17 @@ document.addEventListener(
   false
 );
 
-// function zoeArrowCall() {
-//   if ("ArrowRight" in keyClick) {
-//     console.log("ZOE TEST");
-//   }
-// }
-
-// if ("ArrowLeft" in keyClick || "ArrowRight" in keyClick) {
-//   clearInterval(hobbitAnimateIdle);
-//   clearInterval(hobbitRunRightInterval);
-//   hobbitRunRightInterval = setInterval(hobbitRunAnimateRight, 1000);
-
-//   //why won't this clear or work... is it to do with scope?? but then I don't want the animations to keep speeding up their own frame rates if i keep the scope locally, but then it is a bitch to switch between idle and running if i make the scope wider...?
-// }
-
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
-    clearInterval(hobbitRunInterval);
-    hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-    hobbit.static = false;
-    hobbit.moving = true;
-    // hobbit.run = hobbitRun1Left;
     hobbit.xCoord -= hobbit.speed;
   }
   if ("ArrowRight" in keyClick) {
-    clearInterval(hobbitRunInterval);
-    hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-    hobbit.static = false;
-    hobbit.moving = true;
     hobbit.xCoord += hobbit.speed;
   }
   //left and right movement
+}
+
+function collisionDetect() {
   const hobbitLeadingRight = hobbit.xCoord + 70;
   const hobbitLeadingLeft = hobbit.xCoord + 60;
   const doesHobCollideRight = hobbitLeadingRight >= canvas.width;
@@ -205,12 +171,9 @@ function playerMove() {
     hobbit.xCoord = hobbit.xCoord + 30;
   }
   //edge detection
-  if ((keyClick.key = false)) {
-    clearInterval(hobbitRunInterval);
-    console.log("no key pressed");
-    hobbitRunInterval = setInterval(hobbitAnimateIdle, 1000);
-  }
+}
 
+function playerJump() {
   function hobbitJump() {
     hobbit.yCoord = 365;
     setTimeout(function () {
@@ -235,14 +198,37 @@ document.addEventListener(
   false
 );
 
+let hobbitRunInterval;
+
+// "ArrowRight" in keyClick
+//   ? (hobbit.movingRight = true)
+//   : (hobbit.movingRight = false);
+
+// "ArrowLeft" in keyClick
+//   ? (hobbit.movingLeft = true)
+//   : (hobbit.movingLeft = false);
+
+if (hobbit.movingRight) {
+  clearInterval(hobbitRunInterval);
+  console.log("hobbit moving right is", hobbit.movingRight);
+  hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
+}
+
+if (hobbit.movingLeft) {
+  clearInterval(hobbitRunInterval);
+  console.log("hobbit moving left is", hobbit.movingLeft);
+  hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1000);
+}
+
 function checkIfReady() {
   this.ready = true;
   playGame();
 }
 
 function playGame() {
-  // zoeArrowCall();
+  playerJump();
   playerMove();
+  collisionDetect();
   render();
   requestAnimationFrame(playGame);
 }
