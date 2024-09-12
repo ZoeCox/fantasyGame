@@ -78,7 +78,7 @@ const hobbit = {
   height: 125,
   width: 125,
   speed: 0.1,
-  movingRight: true,
+  hobbitMovingRight: true,
   run: hobbitRun1Right,
 };
 
@@ -141,7 +141,6 @@ document.addEventListener(
   "keydown",
   function (event) {
     keyClick[event.key] = true;
-    hobbit.moving = true;
   },
   false
 );
@@ -149,9 +148,11 @@ document.addEventListener(
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
     hobbit.xCoord -= hobbit.speed;
+    hobbitMovingRight = false;
   }
   if ("ArrowRight" in keyClick) {
     hobbit.xCoord += hobbit.speed;
+    hobbitMovingRight = true;
   }
   //left and right movement
 }
@@ -188,6 +189,22 @@ function playerJump() {
   //jump handling
 }
 
+let hobbitRunInterval;
+
+hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
+
+hobbit.movingRight = false;
+
+function animateSwitcher() {
+  if (!hobbit.movingRight) {
+    clearInterval(hobbitRunInterval);
+    console.log("hobbit moving LEFT");
+    hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1000);
+  }
+}
+
+animateSwitcher();
+
 document.addEventListener(
   "keyup",
   function (event) {
@@ -196,54 +213,6 @@ document.addEventListener(
   },
   false
 );
-
-let hobbitRunInterval;
-
-// "ArrowRight" in keyClick
-//   ? (hobbit.movingRight = true)
-//   : (hobbit.movingRight = false);
-
-// "ArrowLeft" in keyClick
-//   ? (hobbit.movingLeft = true)
-//   : (hobbit.movingLeft = false);
-function animateSwitcher() {
-
-      if ("ArrowRight" in keyClick) {
-        hobbit.movingRight = true;
-      }
-
-      if ("ArrowLeft" in keyClick) {
-        hobbit.movingRight = false;
-      }
-      else(hobbit.movingRight = true)
-        if (hobbit.movingRight) {
-    clearInterval(hobbitRunInterval);
-    console.log("hobbit moving right is", hobbit.movingRight);
-    hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-  }
-
-  if (!hobbit.movingRight) {
-    clearInterval(hobbitRunInterval);
-    console.log("hobbit moving left");
-    hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1000);
-  }
-
-
-}
-
-animateSwitcher();
-
-// if (hobbit.movingRight) {
-//   clearInterval(hobbitRunInterval);
-//   console.log("hobbit moving right is", hobbit.movingRight);
-//   hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
-// }
-
-// if (hobbit.movingLeft) {
-//   clearInterval(hobbitRunInterval);
-//   console.log("hobbit moving left is", hobbit.movingLeft);
-//   hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1000);
-// }
 
 function checkIfReady() {
   this.ready = true;
