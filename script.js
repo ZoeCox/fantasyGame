@@ -79,6 +79,7 @@ const hobbit = {
   width: 125,
   speed: 0.1,
   hobbitMovingRight: true,
+  hobbitMovingLeft: false,
   run: hobbitRun1Right,
 };
 
@@ -108,18 +109,18 @@ function hobbitAnimateIdle() {
     const moveFrame = () => {
       hobbit.run = movementArrIdle[i];
     };
-    setTimeout(moveFrame, i * 250);
+    timeoutQueue.push(setTimeout(moveFrame, i * 250));
   }
 }
 //idle animation
-
+const timeoutQueue = [];
 function hobbitRunAnimateRight() {
   console.log("hobbit is going right");
   for (let i = 0; i < movementArrRight.length; i++) {
     const moveFrame = () => {
       hobbit.run = movementArrRight[i];
     };
-    setTimeout(moveFrame, i * 200);
+    timeoutQueue.push(setTimeout(moveFrame, i * 200));
   }
 }
 //right running animation
@@ -130,7 +131,7 @@ function hobbitRunAnimateLeft() {
     const moveFrame = () => {
       hobbit.run = movementArrLeft[i];
     };
-    setTimeout(moveFrame, i * 200);
+    timeoutQueue.push(setTimeout(moveFrame, i * 200));
   }
 }
 // left running animation
@@ -148,11 +149,11 @@ document.addEventListener(
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
     hobbit.xCoord -= hobbit.speed;
-    hobbitMovingRight = false;
+    hobbit.movingRight = false;
   }
   if ("ArrowRight" in keyClick) {
     hobbit.xCoord += hobbit.speed;
-    hobbitMovingRight = true;
+    hobbit.movingRight = true;
   }
   //left and right movement
 }
@@ -191,19 +192,22 @@ function playerJump() {
 
 let hobbitRunInterval;
 
-hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1000);
+hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1200);
 
-hobbit.movingRight = false;
+hobbit.movingRight = true;
 
 function animateSwitcher() {
-  if (!hobbit.movingRight) {
+  if (!hobbit.movingRight && !hobbit.movingLeft) {
     clearInterval(hobbitRunInterval);
+
+    for (let i = 0; i < timeoutQueue; i++) {
+      clearTimeout(timeoutQueue[i]);
+    }
+    hobbit.movingLeft = true;
     console.log("hobbit moving LEFT");
-    hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1000);
+    hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1200);
   }
 }
-
-animateSwitcher();
 
 document.addEventListener(
   "keyup",
@@ -220,6 +224,7 @@ function checkIfReady() {
 }
 
 function playGame() {
+  animateSwitcher();
   playerJump();
   playerMove();
   collisionDetect();
