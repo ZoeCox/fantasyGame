@@ -140,3 +140,38 @@
 
 //   //why won't this clear or work... is it to do with scope?? but then I don't want the animations to keep speeding up their own frame rates if i keep the scope locally, but then it is a bitch to switch between idle and running if i make the scope wider...?
 // } -->
+
+
+<!-- 
+function hobbitAnimateIdle() {
+  console.log("hobbit is idle");
+  for (let i = 0; i < movementArrIdle.length; i++) {
+    const moveFrame = () => {
+      hobbit.run = movementArrIdle[i];
+    };
+    timeoutQueue.push(setTimeout(moveFrame, i * 250));
+  }
+}
+//idle animation
+const timeoutQueue = [];
+function hobbitRunAnimateRight() {
+  console.log("hobbit is going right");
+  for (let i = 0; i < movementArrRight.length; i++) {
+    const moveFrame = () => {
+      hobbit.run = movementArrRight[i];
+    };
+    timeoutQueue.push(setTimeout(moveFrame, i * 200));
+  }
+}
+//right running animation
+
+function hobbitRunAnimateLeft() {
+  console.log("hobbit is going left");
+  for (let i = 0; i < movementArrLeft.length; i++) {
+    const moveFrame = () => {
+      hobbit.run = movementArrLeft[i];
+    };
+    timeoutQueue.push(setTimeout(moveFrame, i * 200));
+  }
+}
+// left running animation -->

@@ -78,7 +78,7 @@ const hobbit = {
   height: 125,
   width: 125,
   speed: 0.1,
-  hobbitMovingRight: true,
+  hobbitMovingRight: false,
   hobbitMovingLeft: false,
   run: hobbitRun1Right,
 };
@@ -103,38 +103,24 @@ const movementArrLeft = [
   hobbitRun1Left,
 ];
 
-function hobbitAnimateIdle() {
-  console.log("hobbit is idle");
-  for (let i = 0; i < movementArrIdle.length; i++) {
-    const moveFrame = () => {
-      hobbit.run = movementArrIdle[i];
-    };
-    timeoutQueue.push(setTimeout(moveFrame, i * 250));
+function hobbitAnimate(frame) {
+  let directionArr;
+  if (hobbit.movingLeft) {
+    directionArr = movementArrLeft;
+  } else if (hobbit.movingRight) {
+    directionArr = movementArrRight;
+  } else if (!hobbit.movingLeft && !hobbit.movingRight) {
+    directionArr = movementArrIdle;
   }
-}
-//idle animation
-const timeoutQueue = [];
-function hobbitRunAnimateRight() {
-  console.log("hobbit is going right");
-  for (let i = 0; i < movementArrRight.length; i++) {
-    const moveFrame = () => {
-      hobbit.run = movementArrRight[i];
-    };
-    timeoutQueue.push(setTimeout(moveFrame, i * 200));
-  }
-}
-//right running animation
+  hobbit.run = directionArr[frame];
 
-function hobbitRunAnimateLeft() {
-  console.log("hobbit is going left");
-  for (let i = 0; i < movementArrLeft.length; i++) {
-    const moveFrame = () => {
-      hobbit.run = movementArrLeft[i];
-    };
-    timeoutQueue.push(setTimeout(moveFrame, i * 200));
+  const nextAnimateFrame = directionArr[frame] + 1;
+  // console.log(nextAnimateFrame);
+  if (nextAnimateFrame < directionArr.length) {
+    setTimeout(() => hobbitAnimate(nextAnimateFrame), 400);
+    // console.log(nextAnimateFrame);
   }
 }
-// left running animation
 
 const keyClick = {};
 
@@ -149,7 +135,7 @@ document.addEventListener(
 function playerMove() {
   if ("ArrowLeft" in keyClick) {
     hobbit.xCoord -= hobbit.speed;
-    hobbit.movingRight = false;
+    hobbit.movingLeft = true;
   }
   if ("ArrowRight" in keyClick) {
     hobbit.xCoord += hobbit.speed;
@@ -190,33 +176,30 @@ function playerJump() {
   //jump handling
 }
 
-let hobbitRunInterval;
-
-hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1200);
-
-hobbit.movingRight = true;
-
-function animateSwitcher() {
-  if (!hobbit.movingRight && !hobbit.movingLeft) {
-    clearInterval(hobbitRunInterval);
-
-    for (let i = 0; i < timeoutQueue; i++) {
-      clearTimeout(timeoutQueue[i]);
-    }
-    hobbit.movingLeft = true;
-    console.log("hobbit moving LEFT");
-    hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1200);
-  }
-}
+// hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1200);
 
 document.addEventListener(
   "keyup",
   function (event) {
     delete keyClick[event.key];
-    hobbit.moving = false;
+    hobbit.movingRight = false;
+    hobbit.movingLeft = false;
   },
   false
 );
+
+// function animateSwitcher() {
+//   if (!hobbit.movingRight && !hobbit.movingLeft) {
+//     clearInterval(hobbitRunInterval);
+
+//     for (let i = 0; i < timeoutQueue; i++) {
+//       clearTimeout(timeoutQueue[i]);
+//     }
+//     hobbit.movingLeft = true;
+//     console.log("hobbit moving LEFT");
+//     hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1200);
+//   }
+// }
 
 function checkIfReady() {
   this.ready = true;
@@ -224,7 +207,8 @@ function checkIfReady() {
 }
 
 function playGame() {
-  animateSwitcher();
+  // animateSwitcher();
+  hobbitAnimate([0]);
   playerJump();
   playerMove();
   collisionDetect();

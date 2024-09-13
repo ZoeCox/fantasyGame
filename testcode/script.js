@@ -28,6 +28,39 @@ hobbitRun5Right.ready = false;
 hobbitRun5Right.onload = checkIfReady;
 hobbitRun5Right.src = "./hobbitSprite/hobbitRun5Right.png";
 
+const arr1 = ["zoe", "cox", "a", "b", "c"];
+const arr2 = ["john", "smith", "1", "2", "3"];
+
+let test = true;
+
+function recursiveFunction(frame) {
+  let chosenArr;
+  if (test) {
+    chosenArr = arr1;
+  } else {
+    chosenArr = arr2;
+  }
+  console.log(chosenArr);
+  frame = chosenArr[1];
+  console.log(focusedArr[frame]);
+
+  const nextFrame = frame + 1;
+  console.log(nextFrame);
+  if (nextFrame < chosenArr.length) {
+    setTimeout(recursiveFunction(nextFrame), 500);
+  }
+}
+
+recursiveFunction();
+
+// function recursiveCount(count) {
+//   console.log(count);
+//   if (count < 100) {
+//     setTimeout(() => recursiveCount(count + 1), 250);
+//   }
+// }
+// recursiveCount(1);
+
 const hobbit = {
   xCoord: 100,
   yCoord: 100,
@@ -53,7 +86,6 @@ function hobbitMovement() {
       hobbit.run = movementArrRight[i];
     };
     setTimeout(moveFrame, i * 200);
-    console.log([i], `this is frame ${[i]}`);
   }
 }
 
