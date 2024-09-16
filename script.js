@@ -70,20 +70,80 @@ hobbitRun7Left.ready = false;
 hobbitRun7Left.onload = checkIfReady;
 hobbitRun7Left.src = "./hobbitSprite/hobbitRun7Left.png";
 
+const hobbitRun6Right = new Image();
+hobbitRun6Right.ready = false;
+hobbitRun6Right.onload = checkIfReady;
+hobbitRun6Right.src = "./hobbitSprite/hobbitRun6Right.png";
+
+const hobbitRun6Left = new Image();
+hobbitRun6Left.ready = false;
+hobbitRun6Left.onload = checkIfReady;
+hobbitRun6Left.src = "./hobbitSprite/hobbitRun6Left.png";
+
+const hobbitRun8Right = new Image();
+hobbitRun8Right.ready = false;
+hobbitRun8Right.onload = checkIfReady;
+hobbitRun8Right.src = "./hobbitSprite/hobbitRun8Right.png";
+
+const hobbitRun8Left = new Image();
+hobbitRun8Left.ready = false;
+hobbitRun8Left.onload = checkIfReady;
+hobbitRun8Left.src = "./hobbitSprite/hobbitRun8Left.png";
+
+const hobbitRun9Right = new Image();
+hobbitRun9Right.ready = false;
+hobbitRun9Right.onload = checkIfReady;
+hobbitRun9Right.src = "./hobbitSprite/hobbitRun9Right.png";
+
+const hobbitRun9Left = new Image();
+hobbitRun9Left.ready = false;
+hobbitRun9Left.onload = checkIfReady;
+hobbitRun9Left.src = "./hobbitSprite/hobbitRun9Left.png";
+
+const hobbitRun10Right = new Image();
+hobbitRun10Right.ready = false;
+hobbitRun10Right.onload = checkIfReady;
+hobbitRun10Right.src = "./hobbitSprite/hobbitRun10Right.png";
+
+const hobbitRun10Left = new Image();
+hobbitRun10Left.ready = false;
+hobbitRun10Left.onload = checkIfReady;
+hobbitRun10Left.src = "./hobbitSprite/hobbitRun10Left.png";
+
 //still images for hobbit/movement frames
+
+const hobbitIdle1 = new Image();
+hobbitIdle1.ready = false;
+hobbitIdle1.onload = checkIfReady;
+hobbitIdle1.src = "./hobbitSprite/hobbitIdle1.png";
+
+const hobbitIdle2 = new Image();
+hobbitIdle2.ready = false;
+hobbitIdle2.onload = checkIfReady;
+hobbitIdle2.src = "./hobbitSprite/hobbitIdle2.png";
+
+const hobbitIdle3 = new Image();
+hobbitIdle3.ready = false;
+hobbitIdle3.onload = checkIfReady;
+hobbitIdle3.src = "./hobbitSprite/hobbitIdle3.png";
+
+const hobbitIdle4 = new Image();
+hobbitIdle4.ready = false;
+hobbitIdle4.onload = checkIfReady;
+hobbitIdle4.src = "./hobbitSprite/hobbitIdle4.png";
 
 const hobbit = {
   xCoord: 25,
   yCoord: 385,
   height: 125,
   width: 125,
-  speed: 0.1,
+  speed: 0.075,
   hobbitMovingRight: false,
   hobbitMovingLeft: false,
   run: hobbitRun1Right,
 };
 
-const movementArrIdle = [hobbitRun1Right, hobbitRun2Right, hobbitRun1Right];
+const movementArrIdle = [hobbitIdle1, hobbitIdle2, hobbitIdle3, hobbitIdle4];
 
 const movementArrRight = [
   hobbitRun1Right,
@@ -91,7 +151,11 @@ const movementArrRight = [
   hobbitRun3Right,
   hobbitRun4Right,
   hobbitRun5Right,
-  hobbitRun1Right,
+  hobbitRun6Right,
+  hobbitRun7Right,
+  hobbitRun8Right,
+  hobbitRun9Right,
+  hobbitRun10Right,
 ];
 
 const movementArrLeft = [
@@ -100,27 +164,30 @@ const movementArrLeft = [
   hobbitRun3Left,
   hobbitRun4Left,
   hobbitRun5Left,
-  hobbitRun1Left,
+  hobbitRun6Left,
+  hobbitRun7Left,
+  hobbitRun8Left,
+  hobbitRun9Left,
+  hobbitRun10Left,
 ];
 
-function hobbitAnimate(frame) {
+function hobbitAnimate(arrFrame) {
   let directionArr;
   if (hobbit.movingLeft) {
     directionArr = movementArrLeft;
   } else if (hobbit.movingRight) {
     directionArr = movementArrRight;
-  } else if (!hobbit.movingLeft && !hobbit.movingRight) {
+  } else {
     directionArr = movementArrIdle;
   }
-  hobbit.run = directionArr[frame];
+  const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
+  hobbit.run = directionArr[checkedNextFrame];
 
-  const nextAnimateFrame = directionArr[frame] + 1;
-  // console.log(nextAnimateFrame);
-  if (nextAnimateFrame < directionArr.length) {
-    setTimeout(() => hobbitAnimate(nextAnimateFrame), 400);
-    // console.log(nextAnimateFrame);
-  }
+  const nextAnimateFrame = checkedNextFrame + 1;
+  const animationTime = 1250 / directionArr.length;
+  setTimeout(() => hobbitAnimate(nextAnimateFrame), animationTime);
 }
+hobbitAnimate(0);
 
 const keyClick = {};
 
@@ -161,22 +228,19 @@ function collisionDetect() {
 }
 
 function playerJump() {
-  function hobbitJump() {
-    hobbit.yCoord = 365;
-    setTimeout(function () {
-      hobbit.yCoord = 385;
-    }, 300);
-  }
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === " ") {
-      hobbitJump();
-    }
-  });
-  //jump handling
+  hobbit.yCoord = 365;
+  setTimeout(function () {
+    hobbit.yCoord = 385;
+  }, 300);
 }
 
-// hobbitRunInterval = setInterval(hobbitRunAnimateRight, 1200);
+//jump handling
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === " ") {
+    playerJump();
+  }
+});
 
 document.addEventListener(
   "keyup",
@@ -188,28 +252,12 @@ document.addEventListener(
   false
 );
 
-// function animateSwitcher() {
-//   if (!hobbit.movingRight && !hobbit.movingLeft) {
-//     clearInterval(hobbitRunInterval);
-
-//     for (let i = 0; i < timeoutQueue; i++) {
-//       clearTimeout(timeoutQueue[i]);
-//     }
-//     hobbit.movingLeft = true;
-//     console.log("hobbit moving LEFT");
-//     hobbitRunInterval = setInterval(hobbitRunAnimateLeft, 1200);
-//   }
-// }
-
 function checkIfReady() {
   this.ready = true;
   playGame();
 }
 
 function playGame() {
-  // animateSwitcher();
-  hobbitAnimate([0]);
-  playerJump();
   playerMove();
   collisionDetect();
   render();
