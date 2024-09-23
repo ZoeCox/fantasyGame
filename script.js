@@ -10,6 +10,11 @@ treeBackground.ready = false;
 treeBackground.onload = checkIfReady;
 treeBackground.src = "./backGround/treeBackground.png";
 
+const blueBird = new Image();
+blueBird.ready = false;
+blueBird.onload = checkIfReady;
+blueBird.src = "./enemySprites/bird.png";
+
 const hobbitRun1Right = new Image();
 hobbitRun1Right.ready = false;
 hobbitRun1Right.onload = checkIfReady;
@@ -143,6 +148,14 @@ const hobbit = {
   run: hobbitRun1Right,
 };
 
+const bird = {
+  frame: blueBird,
+  height: 27,
+  width: 27,
+  xCoord: 350,
+  yCoord: 438,
+};
+
 const movementArrIdle = [hobbitIdle1, hobbitIdle2, hobbitIdle3, hobbitIdle4];
 
 const movementArrRight = [
@@ -211,7 +224,7 @@ function playerMove() {
   //left and right movement
 }
 
-function collisionDetect() {
+function edgeCollisionDetect() {
   const hobbitLeadingRight = hobbit.xCoord + 70;
   const hobbitLeadingLeft = hobbit.xCoord + 60;
   const doesHobCollideRight = hobbitLeadingRight >= canvas.width;
@@ -227,11 +240,19 @@ function collisionDetect() {
   //edge detection
 }
 
+function birdCollisionDetect() {
+  const hobbitLeadingRight = hobbit.xCoord + 70;
+  const hobbitLeadingLeft = hobbit.xCoord + 60;
+  const hobbitBottomEdge = hobbit.yCoord + hobbit.height;
+  const birdLeft = bird.xCoord + bird.height;
+  const birdRight = bird.xCoord - bird.width;
+}
+
 function playerJump() {
-  hobbit.yCoord = 365;
+  hobbit.yCoord = 350;
   setTimeout(function () {
     hobbit.yCoord = 385;
-  }, 300);
+  }, 400);
 }
 
 //jump handling
@@ -259,7 +280,7 @@ function checkIfReady() {
 
 function playGame() {
   playerMove();
-  collisionDetect();
+  edgeCollisionDetect();
   render();
   requestAnimationFrame(playGame);
 }
@@ -275,6 +296,17 @@ function render() {
     hobbit.yCoord,
     hobbit.width,
     hobbit.height
+  );
+  context.drawImage(
+    bird.frame,
+    0,
+    0,
+    45,
+    35,
+    bird.xCoord,
+    bird.yCoord,
+    bird.height,
+    bird.width
   );
 }
 
