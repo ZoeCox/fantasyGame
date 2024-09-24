@@ -224,16 +224,20 @@ function playerMove() {
   //left and right movement
 }
 
+const hobbitLeadingRight = hobbit.xCoord + 70;
+const hobbitLeadingLeft = hobbit.xCoord + 60;
+const hobbitCenter = hobbit.height / 2 + hobbit.xCoord;
+const birdLeadingRight = bird.xCoord + 70;
+const birdLeadingLeft = bird.xCoord + 60;
+
 function edgeCollisionDetect() {
-  const hobbitLeadingRight = hobbit.xCoord + 70;
-  const hobbitLeadingLeft = hobbit.xCoord + 60;
-  const doesHobCollideRight = hobbitLeadingRight >= canvas.width;
-  const doesHobCollideLeft = hobbitLeadingLeft <= 0;
-  if (doesHobCollideRight) {
+  const doesHobCollideRightWall = hobbitLeadingRight >= canvas.width;
+  const doesHobCollideLeftWall = hobbitLeadingLeft <= 0;
+  if (doesHobCollideRightWall) {
     console.log("you've hit the right edge");
     hobbit.xCoord = hobbit.xCoord - 30;
   }
-  if (doesHobCollideLeft) {
+  if (doesHobCollideLeftWall) {
     console.log("you've hit the left edge");
     hobbit.xCoord = hobbit.xCoord + 30;
   }
@@ -241,11 +245,19 @@ function edgeCollisionDetect() {
 }
 
 function birdCollisionDetect() {
-  const hobbitLeadingRight = hobbit.xCoord + 70;
-  const hobbitLeadingLeft = hobbit.xCoord + 60;
-  const hobbitBottomEdge = hobbit.yCoord + hobbit.height;
-  const birdLeft = bird.xCoord + bird.height;
-  const birdRight = bird.xCoord - bird.width;
+  const doesHobLeftCollideBird =
+    hobbitCenter >= birdTop && hobbitCenter <= birdBottom;
+  if (doesHobLeftCollideBird) {
+    console.log("you hit the bird");
+  }
+  // const doesHobCollideBirdRight = hobbitLeadingRight >= bird.width;
+  // const doesHobCollideBirdLeft = hobbitLeadingLeft <= bird.xCoord;
+  // if (doesHobCollideBirdRight) {
+  //   console.log("you've hit the bird's right");
+  // }
+  // if (doesHobCollideBirdLeft) {
+  //   console.log("you've hit the bird's left");
+  // }
 }
 
 function playerJump() {
