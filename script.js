@@ -138,8 +138,9 @@ hobbitIdle4.onload = checkIfReady;
 hobbitIdle4.src = "./hobbitSprite/hobbitIdle4.png";
 
 const hobbit = {
-  xCoord: 25,
+  xCoord: 400,
   yCoord: 385,
+  //xcoord 25
   height: 125,
   width: 125,
   speed: 0.075,
@@ -224,13 +225,9 @@ function playerMove() {
   //left and right movement
 }
 
-const hobbitLeadingRight = hobbit.xCoord + 70;
-const hobbitLeadingLeft = hobbit.xCoord + 60;
-const hobbitCenter = hobbit.height / 2 + hobbit.xCoord;
-const birdLeadingRight = bird.xCoord + 70;
-const birdLeadingLeft = bird.xCoord + 60;
-
 function edgeCollisionDetect() {
+  const hobbitLeadingRight = hobbit.xCoord + 70;
+  const hobbitLeadingLeft = hobbit.xCoord + 60;
   const doesHobCollideRightWall = hobbitLeadingRight >= canvas.width;
   const doesHobCollideLeftWall = hobbitLeadingLeft <= 0;
   if (doesHobCollideRightWall) {
@@ -245,19 +242,18 @@ function edgeCollisionDetect() {
 }
 
 function birdCollisionDetect() {
-  const doesHobLeftCollideBird =
-    hobbitCenter >= birdTop && hobbitCenter <= birdBottom;
-  if (doesHobLeftCollideBird) {
-    console.log("you hit the bird");
+  const hobbitLeadingRight = hobbit.xCoord + 50;
+  const hobbitLeadingLeft = hobbit.xCoord - 20;
+  const birdLeadingRight = bird.xCoord + bird.width;
+  const birdLeadingLeft = bird.xCoord - 20;
+  const doesHobCollideBirdLeft = hobbitLeadingRight >= birdLeadingLeft;
+  const doesHobCollideBirdRight = hobbitLeadingLeft >= birdLeadingRight;
+  if (doesHobCollideBirdLeft) {
+    console.log("you hit the bird left");
   }
-  // const doesHobCollideBirdRight = hobbitLeadingRight >= bird.width;
-  // const doesHobCollideBirdLeft = hobbitLeadingLeft <= bird.xCoord;
-  // if (doesHobCollideBirdRight) {
-  //   console.log("you've hit the bird's right");
-  // }
-  // if (doesHobCollideBirdLeft) {
-  //   console.log("you've hit the bird's left");
-  // }
+  if (doesHobCollideBirdRight) {
+    console.log("you hit the bird right");
+  }
 }
 
 function playerJump() {
@@ -293,6 +289,7 @@ function checkIfReady() {
 function playGame() {
   playerMove();
   edgeCollisionDetect();
+  birdCollisionDetect();
   render();
   requestAnimationFrame(playGame);
 }
