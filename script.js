@@ -137,8 +137,75 @@ hobbitIdle4.ready = false;
 hobbitIdle4.onload = checkIfReady;
 hobbitIdle4.src = "./hobbitSprite/hobbitIdle4.png";
 
+//hobbit idle
+
+const characterIdle = new Image();
+characterIdle.ready = false;
+characterIdle.onload = checkIfReady;
+characterIdle.src = "./characterSprite/characterIdle.png";
+
+const characterRunRight = new Image();
+characterRunRight.ready = false;
+characterRunRight.onload = checkIfReady;
+characterRunRight.src = "./characterSprite/characterRunRight.png";
+
+const characterRunLeft = new Image();
+characterRunLeft.ready = false;
+characterRunLeft.onload = checkIfReady;
+characterRunLeft.src = "./characterSprite/characterRunLeft.png";
+
+const charIdleFrameX = [0, 64, 128, 192];
+
+const charRunRightFrameX = [0, 80, 160, 240, 320, 400, 480, 560, 640];
+
+const charRunLeftFrameX = [640, 560, 480, 320, 240, 160, 80, 0];
+
+const character = {
+  source: characterIdle,
+  frameX: charIdleFrameX[0],
+  frameY: 0,
+  sourceWidth: 70,
+  sourceHeight: 70,
+  xCoord: 220,
+  yCoord: 390,
+  width: 75,
+  height: 75,
+  speed: 0.075,
+  movingLeft: false,
+  movingRight: false,
+};
+
+function characterAnimate(arrFrame) {
+  let directionArr;
+  if (character.movingLeft) {
+    character.source = characterRunLeft;
+    directionArr = charRunLeftFrameX;
+  } else if (character.movingRight) {
+    character.source = characterRunRight;
+    directionArr = charRunRightFrameX;
+  } else {
+    character.source = characterIdle;
+    directionArr = charIdleFrameX;
+  }
+  const checkedNextFrame = arrFrame < charIdleFrameX.length ? arrFrame : 0;
+  character.frameX = charIdleFrameX[checkedNextFrame];
+  const nextAnimateFrame = checkedNextFrame + 1;
+  const animationTime = 1400 / charIdleFrameX.length;
+  setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
+}
+characterAnimate(0);
+
+// function characterAnimate(arrFrame) {
+//   const checkedNextFrame = arrFrame < charIdleFrameX.length ? arrFrame : 0;
+//   character.frameX = charIdleFrameX[checkedNextFrame];
+//   const nextAnimateFrame = checkedNextFrame + 1;
+//   const animationTime = 1000 / charIdleFrameX.length;
+//   setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
+// }
+// characterAnimate(0);
+
 const hobbit = {
-  xCoord: 400,
+  xCoord: 25,
   yCoord: 385,
   //xcoord 25
   height: 125,
@@ -225,6 +292,18 @@ function playerMove() {
   //left and right movement
 }
 
+function characterMove() {
+  if ("a" in keyClick) {
+    character.xCoord -= character.speed;
+    character.movingLeft = true;
+  }
+  if ("d" in keyClick) {
+    character.xCoord += character.speed;
+    character.movingRight = true;
+  }
+  //left and right movement
+}
+
 function edgeCollisionDetect() {
   const hobbitLeadingRight = hobbit.xCoord + 70;
   const hobbitLeadingLeft = hobbit.xCoord + 60;
@@ -242,17 +321,12 @@ function edgeCollisionDetect() {
 }
 
 function birdCollisionDetect() {
-  const hobbitLeadingRight = hobbit.xCoord + 50;
-  const hobbitLeadingLeft = hobbit.xCoord - 20;
-  const birdLeadingRight = bird.xCoord + bird.width;
-  const birdLeadingLeft = bird.xCoord - 20;
-  const doesHobCollideBirdLeft = hobbitLeadingRight >= birdLeadingLeft;
-  const doesHobCollideBirdRight = hobbitLeadingLeft >= birdLeadingRight;
+  const doesHobCollideBirdLeft =
+    hobbit.xCoord >= bird.xCoord - 50 && hobbit.xCoord < bird.xCoord - 70;
+  // const doesHobCollideBirdRight =
+  //   hobbit.xCoord < bird.xCoord + 50 && hobbit.xCoord > bird.xCoord;
   if (doesHobCollideBirdLeft) {
-    console.log("you hit the bird left");
-  }
-  if (doesHobCollideBirdRight) {
-    console.log("you hit the bird right");
+    console.log("you hit the bird ");
   }
 }
 
@@ -263,11 +337,22 @@ function playerJump() {
   }, 400);
 }
 
+function characterJump() {
+  character.yCoord = 350;
+  bird.yCoord = 350;
+  setTimeout(function () {
+    character.yCoord = 385;
+    bird.yCoord = 385 + 53;
+    //just for fun but remove bird soon
+  }, 400);
+}
+
 //jump handling
 
 document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
     playerJump();
+    characterJump();
   }
 });
 
@@ -288,6 +373,7 @@ function checkIfReady() {
 
 function playGame() {
   playerMove();
+  characterMove();
   edgeCollisionDetect();
   birdCollisionDetect();
   render();
@@ -316,6 +402,18 @@ function render() {
     bird.yCoord,
     bird.height,
     bird.width
+  );
+
+  context.drawImage(
+    character.source,
+    character.frameX,
+    character.frameY,
+    character.sourceWidth,
+    character.sourceHeight,
+    character.xCoord,
+    character.yCoord,
+    character.width,
+    character.height
   );
 }
 
