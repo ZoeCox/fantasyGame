@@ -156,17 +156,20 @@ characterRunLeft.src = "./characterSprite/characterRunLeft.png";
 
 const charIdleFrameX = [0, 64, 128, 192];
 
-const charRunRightFrameX = [0, 80, 160, 240, 320, 400, 480, 560, 640];
+// const charRunRightFrameX = [25, 105, 185, 270, 345, 425, 510, 590];
+const charRunRightFrameX = [25];
 
 const charRunLeftFrameX = [640, 560, 480, 320, 240, 160, 80, 0];
 
 const character = {
-  source: characterIdle,
-  frameX: charIdleFrameX[0],
+  // source: characterIdle,
+  // frameX: charIdleFrameX[0],
+  source: characterRunRight,
+  frameX: charRunRightFrameX[0],
   frameY: 0,
   sourceWidth: 70,
   sourceHeight: 70,
-  xCoord: 220,
+  xCoord: 120,
   yCoord: 390,
   width: 75,
   height: 75,
@@ -183,14 +186,17 @@ function characterAnimate(arrFrame) {
   } else if (character.movingRight) {
     character.source = characterRunRight;
     directionArr = charRunRightFrameX;
-  } else {
-    character.source = characterIdle;
-    directionArr = charIdleFrameX;
   }
+
+  //  else {
+  //   character.source = characterIdle;
+  //   directionArr = charIdleFrameX;
+  //   character.sourceWidth = 70;
+  // }
   const checkedNextFrame = arrFrame < charIdleFrameX.length ? arrFrame : 0;
   character.frameX = charIdleFrameX[checkedNextFrame];
   const nextAnimateFrame = checkedNextFrame + 1;
-  const animationTime = 1400 / charIdleFrameX.length;
+  const animationTime = 1600 / charIdleFrameX.length;
   setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
 }
 characterAnimate(0);
@@ -341,7 +347,7 @@ function characterJump() {
   character.yCoord = 350;
   bird.yCoord = 350;
   setTimeout(function () {
-    character.yCoord = 385;
+    character.yCoord = 390;
     bird.yCoord = 385 + 53;
     //just for fun but remove bird soon
   }, 400);
@@ -362,6 +368,8 @@ document.addEventListener(
     delete keyClick[event.key];
     hobbit.movingRight = false;
     hobbit.movingLeft = false;
+    character.movingRight = false;
+    character.movingLeft = false;
   },
   false
 );
