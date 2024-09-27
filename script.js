@@ -62,6 +62,7 @@ const character = {
   speed: 0.5,
   movingLeft: false,
   movingRight: false,
+  name: undefined,
 };
 
 // const birdIdleLeftFrameX = [244, 295, 339, 388, 437, 487];
@@ -148,7 +149,6 @@ function edgeCollisionDetect() {
 }
 
 let birdIntroDone = false;
-let userName;
 
 function birdCollisionDetect() {
   const birdLeadingLeft = bird.xCoord - 15;
@@ -160,9 +160,9 @@ function birdCollisionDetect() {
       "Bird says: 'That wasn't very polite... you don't even ask a fellow his name and you go running into him! The name is Bob, seeing as you refuse to ask.'"
     );
     alert("The bird waits a few moments as you stare at him in silence.");
-    userName = prompt("Bird says: 'Well, what is your name then?'");
+    character.name = prompt("Bird says: 'Well, what is your name then?'");
     alert(
-      `Bird says: 'Well, ${userName} is an odd name, but I've heard stranger...'`
+      `Bird says: 'Well, ${character.name} is an odd name, but I've heard stranger...'`
     );
   };
   if (doesCharCollideBirdLeft && !birdIntroDone) {
@@ -240,6 +240,11 @@ function render() {
     character.width,
     character.height
   );
+  // context.fillStyle = "#CBC1AE";
+  // context.fillRect(100, 47.5, 300, 100);
+  // context.font = "22px sans-serif";
+  // context.fillStyle = "black";
+  // context.fillText("Hello", 105, 85);
 }
 
 document.body.appendChild(canvas);
