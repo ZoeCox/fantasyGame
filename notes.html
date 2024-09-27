@@ -120,3 +120,254 @@ function hobbitRunAnimateLeft() {
   }
 }
 // left running animation -->
+
+
+<!-- 
+HOBBIT CODE
+
+const hobbitRun1Right = new Image();
+hobbitRun1Right.ready = false;
+hobbitRun1Right.onload = checkIfReady;
+hobbitRun1Right.src = "./hobbitSprite/hobbitRun1Right.png";
+
+const hobbitRun1Left = new Image();
+hobbitRun1Left.ready = false;
+hobbitRun1Left.onload = checkIfReady;
+hobbitRun1Left.src = "./hobbitSprite/hobbitRun1Left.png";
+
+const hobbitRun2Right = new Image();
+hobbitRun2Right.ready = false;
+hobbitRun2Right.onload = checkIfReady;
+hobbitRun2Right.src = "./hobbitSprite/hobbitRun2Right.png";
+
+const hobbitRun2Left = new Image();
+hobbitRun2Left.ready = false;
+hobbitRun2Left.onload = checkIfReady;
+hobbitRun2Left.src = "./hobbitSprite/hobbitRun2Left.png";
+
+const hobbitRun3Right = new Image();
+hobbitRun3Right.ready = false;
+hobbitRun3Right.onload = checkIfReady;
+hobbitRun3Right.src = "./hobbitSprite/hobbitRun3Right.png";
+
+const hobbitRun3Left = new Image();
+hobbitRun3Left.ready = false;
+hobbitRun3Left.onload = checkIfReady;
+hobbitRun3Left.src = "./hobbitSprite/hobbitRun3Left.png";
+
+const hobbitRun4Right = new Image();
+hobbitRun4Right.ready = false;
+hobbitRun4Right.onload = checkIfReady;
+hobbitRun4Right.src = "./hobbitSprite/hobbitRun4Right.png";
+
+const hobbitRun4Left = new Image();
+hobbitRun4Left.ready = false;
+hobbitRun4Left.onload = checkIfReady;
+hobbitRun4Left.src = "./hobbitSprite/hobbitRun4Left.png";
+
+const hobbitRun5Right = new Image();
+hobbitRun5Right.ready = false;
+hobbitRun5Right.onload = checkIfReady;
+hobbitRun5Right.src = "./hobbitSprite/hobbitRun5Right.png";
+
+const hobbitRun5Left = new Image();
+hobbitRun5Left.ready = false;
+hobbitRun5Left.onload = checkIfReady;
+hobbitRun5Left.src = "./hobbitSprite/hobbitRun5Left.png";
+
+const hobbitRun7Right = new Image();
+hobbitRun7Right.ready = false;
+hobbitRun7Right.onload = checkIfReady;
+hobbitRun7Right.src = "./hobbitSprite/hobbitRun7Right.png";
+
+const hobbitRun7Left = new Image();
+hobbitRun7Left.ready = false;
+hobbitRun7Left.onload = checkIfReady;
+hobbitRun7Left.src = "./hobbitSprite/hobbitRun7Left.png";
+
+const hobbitRun6Right = new Image();
+hobbitRun6Right.ready = false;
+hobbitRun6Right.onload = checkIfReady;
+hobbitRun6Right.src = "./hobbitSprite/hobbitRun6Right.png";
+
+const hobbitRun6Left = new Image();
+hobbitRun6Left.ready = false;
+hobbitRun6Left.onload = checkIfReady;
+hobbitRun6Left.src = "./hobbitSprite/hobbitRun6Left.png";
+
+const hobbitRun8Right = new Image();
+hobbitRun8Right.ready = false;
+hobbitRun8Right.onload = checkIfReady;
+hobbitRun8Right.src = "./hobbitSprite/hobbitRun8Right.png";
+
+const hobbitRun8Left = new Image();
+hobbitRun8Left.ready = false;
+hobbitRun8Left.onload = checkIfReady;
+hobbitRun8Left.src = "./hobbitSprite/hobbitRun8Left.png";
+
+const hobbitRun9Right = new Image();
+hobbitRun9Right.ready = false;
+hobbitRun9Right.onload = checkIfReady;
+hobbitRun9Right.src = "./hobbitSprite/hobbitRun9Right.png";
+
+const hobbitRun9Left = new Image();
+hobbitRun9Left.ready = false;
+hobbitRun9Left.onload = checkIfReady;
+hobbitRun9Left.src = "./hobbitSprite/hobbitRun9Left.png";
+
+const hobbitRun10Right = new Image();
+hobbitRun10Right.ready = false;
+hobbitRun10Right.onload = checkIfReady;
+hobbitRun10Right.src = "./hobbitSprite/hobbitRun10Right.png";
+
+const hobbitRun10Left = new Image();
+hobbitRun10Left.ready = false;
+hobbitRun10Left.onload = checkIfReady;
+hobbitRun10Left.src = "./hobbitSprite/hobbitRun10Left.png";
+
+//still images for hobbit/movement frames
+
+
+const hobbitIdle1 = new Image();
+hobbitIdle1.ready = false;
+hobbitIdle1.onload = checkIfReady;
+hobbitIdle1.src = "./hobbitSprite/hobbitIdle1.png";
+
+const hobbitIdle2 = new Image();
+hobbitIdle2.ready = false;
+hobbitIdle2.onload = checkIfReady;
+hobbitIdle2.src = "./hobbitSprite/hobbitIdle2.png";
+
+const hobbitIdle3 = new Image();
+hobbitIdle3.ready = false;
+hobbitIdle3.onload = checkIfReady;
+hobbitIdle3.src = "./hobbitSprite/hobbitIdle3.png";
+
+const hobbitIdle4 = new Image();
+hobbitIdle4.ready = false;
+hobbitIdle4.onload = checkIfReady;
+hobbitIdle4.src = "./hobbitSprite/hobbitIdle4.png";
+
+//hobbit idle
+
+const hobbit = {
+  xCoord: 25,
+  yCoord: 385,
+  //xcoord 25
+  height: 125,
+  width: 125,
+  speed: 0.075,
+  hobbitMovingRight: false,
+  hobbitMovingLeft: false,
+  run: hobbitRun1Right,
+};
+
+
+const movementArrIdle = [hobbitIdle1, hobbitIdle2, hobbitIdle3, hobbitIdle4];
+
+const movementArrRight = [
+  hobbitRun1Right,
+  hobbitRun2Right,
+  hobbitRun3Right,
+  hobbitRun4Right,
+  hobbitRun5Right,
+  hobbitRun6Right,
+  hobbitRun7Right,
+  hobbitRun8Right,
+  hobbitRun9Right,
+  hobbitRun10Right,
+];
+
+const movementArrLeft = [
+  hobbitRun1Left,
+  hobbitRun2Left,
+  hobbitRun3Left,
+  hobbitRun4Left,
+  hobbitRun5Left,
+  hobbitRun6Left,
+  hobbitRun7Left,
+  hobbitRun8Left,
+  hobbitRun9Left,
+  hobbitRun10Left,
+];
+
+function hobbitAnimate(arrFrame) {
+  let directionArr;
+  if (hobbit.movingLeft) {
+    directionArr = movementArrLeft;
+  } else if (hobbit.movingRight) {
+    directionArr = movementArrRight;
+  } else {
+    directionArr = movementArrIdle;
+  }
+  const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
+  hobbit.run = directionArr[checkedNextFrame];
+
+  const nextAnimateFrame = checkedNextFrame + 1;
+  const animationTime = 1250 / directionArr.length;
+  setTimeout(() => hobbitAnimate(nextAnimateFrame), animationTime);
+}
+hobbitAnimate(0);
+
+function playerMove() {
+  if ("ArrowLeft" in keyClick) {
+    hobbit.xCoord -= hobbit.speed;
+    hobbit.movingLeft = true;
+  }
+  if ("ArrowRight" in keyClick) {
+    hobbit.xCoord += hobbit.speed;
+    hobbit.movingRight = true;
+  }
+  //left and right movement
+}
+
+  if (doesHobCollideRightWall) {
+    console.log("you've hit the right edge");
+    hobbit.xCoord = hobbit.xCoord - 30;
+  }
+  if (doesHobCollideLeftWall) {
+    console.log("you've hit the left edge");
+    hobbit.xCoord = hobbit.xCoord + 30;
+  }
+
+  const hobbitLeadingRight = hobbit.xCoord + 70;
+  const hobbitLeadingLeft = hobbit.xCoord + 60;
+  const doesHobCollideRightWall = hobbitLeadingRight >= canvas.width;
+  const doesHobCollideLeftWall = hobbitLeadingLeft <= 0;
+
+    const doesHobCollideBirdLeft =
+    hobbit.xCoord >= bird.xCoord - 50 && hobbit.xCoord < bird.xCoord - 70;
+//for collision detect
+
+function playerJump() {
+  hobbit.yCoord = 350;
+  setTimeout(function () {
+    hobbit.yCoord = 385;
+  }, 400);
+}
+//jump logic
+
+    hobbit.movingRight = false;
+    hobbit.movingLeft = false;
+//movement setting release for hobbit
+
+
+  context.drawImage(
+    hobbit.run,
+    hobbit.xCoord,
+    hobbit.yCoord,
+    hobbit.width,
+    hobbit.height
+  );
+//drawing hobbit on canvas -->
+
+
+<!-- 
+// function characterAnimate(arrFrame) {
+//   const checkedNextFrame = arrFrame < charIdleFrameX.length ? arrFrame : 0;
+//   character.frameX = charIdleFrameX[checkedNextFrame];
+//   const nextAnimateFrame = checkedNextFrame + 1;
+//   const animationTime = 1000 / charIdleFrameX.length;
+//   setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
+// }
+// characterAnimate(0); -->
