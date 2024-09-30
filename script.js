@@ -139,11 +139,14 @@ function edgeCollisionDetect() {
   const doesCharCollideLeftWall = characterLeadingLeft <= 0;
   if (doesCharCollideRightWall) {
     console.log("you've hit the right edge");
-    character.xCoord = character.xCoord - 30;
+    // character.xCoord = character.xCoord - 30;
   }
   if (doesCharCollideLeftWall) {
     console.log("you've hit the left edge");
-    character.xCoord = character.xCoord + 30;
+    // character.xCoord = character.xCoord + 30;
+    character.speed = 0;
+  } else {
+    character.speed = 0.5;
   }
   //edge detection
 }
