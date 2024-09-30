@@ -5,20 +5,20 @@ canvas.width = 500;
 
 const footstepSound = document.querySelector(".footstep-sound");
 
-const treeBackground = new Image();
-treeBackground.ready = false;
-treeBackground.onload = checkIfReady;
-treeBackground.src = "./backGround/treeBackground.png";
+// const treeBackground = new Image();
+// treeBackground.ready = false;
+// treeBackground.onload = checkIfReady;
+// treeBackground.src = "./backGround/treeBackground.png";
+
+// const winterBackground = new Image();
+// winterBackground.ready = false;
+// winterBackground.onload = checkIfReady;
+// winterBackground.src = "./backGround/winterBackground.gif";
 
 const hillBackground = new Image();
 hillBackground.ready = false;
 hillBackground.onload = checkIfReady;
 hillBackground.src = "./backGround/hillBackground.png";
-
-const winterBackground = new Image();
-winterBackground.ready = false;
-winterBackground.onload = checkIfReady;
-winterBackground.src = "./backGround/winterBackground.gif";
 
 const birdRight = new Image();
 birdRight.ready = false;
@@ -45,27 +45,38 @@ characterRunLeft.ready = false;
 characterRunLeft.onload = checkIfReady;
 characterRunLeft.src = "./characterSprite/characterRunLeft.png";
 
+const characterJumpRight = new Image();
+characterJumpRight.ready = false;
+characterJumpRight.onload = checkIfReady;
+characterJumpRight.src = "./characterSprite/characterJumpRight.png";
+
 const charIdleFrameX = [0, 64, 128, 192];
 const charRunRightFrameX = [25, 105, 185, 270, 345, 425, 510, 590];
 const charRunLeftFrameX = [579, 499, 419, 339, 258, 179, 97, 18];
+const charJumpRightFrameX = [
+  11, 74, 139, 196, 259, 325, 390, 455, 518, 585, 651, 714, 780, 843, 907,
+];
+// const charJumpRightFrameX = [74, 196, 518, 651, 907];
 
 const character = {
   source: characterIdle,
   frameX: charIdleFrameX[0],
   frameY: 0,
-  sourceWidth: 70,
+  sourceWidth: 50,
   sourceHeight: 70,
   xCoord: 50,
   yCoord: 378,
-  width: 100,
+  width: 70,
   height: 100,
   speed: 0.5,
   movingLeft: false,
   movingRight: false,
+  jumping: false,
   name: undefined,
 };
+// character.name = prompt("What is your name?");
+//IMPORTANT - REACTIVATE SOON
 
-// const birdIdleLeftFrameX = [244, 295, 339, 388, 437, 487];
 const birdIdleLeftFrameX = [437, 487];
 const birdIdleLeftYVal = 129;
 
@@ -81,6 +92,16 @@ const bird = {
   yCoord: 415,
 };
 
+const speechbox = {
+  text: "Use the arrow keys to approach the bird.",
+  textXCoord: 80,
+  textYCoord: 100,
+  boxXCoord: 75,
+  boxYCoord: 47.5,
+  width: 350,
+  height: 100,
+};
+
 function characterAnimate(arrFrame) {
   let directionArr;
   if (character.movingLeft) {
@@ -89,6 +110,9 @@ function characterAnimate(arrFrame) {
   } else if (character.movingRight) {
     character.source = characterRunRight;
     directionArr = charRunRightFrameX;
+  } else if (character.jumping) {
+    character.source = characterJumpRight;
+    directionArr = charJumpRightFrameX;
   } else {
     character.source = characterIdle;
     directionArr = charIdleFrameX;
@@ -96,7 +120,10 @@ function characterAnimate(arrFrame) {
   const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
   character.frameX = directionArr[checkedNextFrame];
   const nextAnimateFrame = checkedNextFrame + 1;
-  const animationTime = 1600 / directionArr.length;
+  let animationTime = 1600 / directionArr.length;
+  if (directionArr === charJumpRightFrameX) {
+    animationTime = 1500 / directionArr.length;
+  }
   setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
 }
 characterAnimate(0);
@@ -134,55 +161,77 @@ function characterMove() {
 
 function edgeCollisionDetect() {
   const characterLeadingRight = character.xCoord + 30;
-  const characterLeadingLeft = character.xCoord - 5;
+  const characterLeadingLeft = character.xCoord;
   const doesCharCollideRightWall = characterLeadingRight >= canvas.width;
   const doesCharCollideLeftWall = characterLeadingLeft <= 0;
   if (doesCharCollideRightWall) {
     console.log("you've hit the right edge");
-    // character.xCoord = character.xCoord - 30;
+    character.speed = 0;
+    if ("ArrowLeft" in keyClick) {
+      character.speed = 0.5;
+    }
   }
   if (doesCharCollideLeftWall) {
     console.log("you've hit the left edge");
-    // character.xCoord = character.xCoord + 30;
     character.speed = 0;
-  } else {
-    character.speed = 0.5;
+    if ("ArrowRight" in keyClick) {
+      character.speed = 0.5;
+    }
   }
   //edge detection
 }
 
 let birdIntroDone = false;
+let jumpIntroDone = false;
+
+function speechBoxFill(textString, timeoutLength) {
+  setTimeout(() => {
+    speechbox.text = textString;
+  }, timeoutLength);
+}
 
 function birdCollisionDetect() {
   const birdLeadingLeft = bird.xCoord - 15;
-  const charLeadingRight = character.xCoord + 40;
-  const doesCharCollideBirdLeft = charLeadingRight >= birdLeadingLeft;
+  const charLeadingRight = character.xCoord + 50;
+  const doesCharCollideBird =
+    charLeadingRight >= birdLeadingLeft && character.xCoord <= bird.yCoord * 2;
   const birdShout = () => {
-    alert("Bird says: 'Ow! You hit me!!!'");
-    alert(
-      "Bird says: 'That wasn't very polite... you don't even ask a fellow his name and you go running into him! The name is Bob, seeing as you refuse to ask.'"
-    );
-    alert("The bird waits a few moments as you stare at him in silence.");
-    character.name = prompt("Bird says: 'Well, what is your name then?'");
-    alert(
-      `Bird says: 'Well, ${character.name} is an odd name, but I've heard stranger...'`
-    );
+    speechbox.text = "Bird says: 'Ow! You hit me!'";
+    speechBoxFill("Bird says: 'That wasn't very polite...'", 3000);
+    speechBoxFill("Bird says: 'You don't even ask a chap his name-'", 6000);
+    speechBoxFill("Bird says: '-and you go running into him!'", 9000);
+    speechBoxFill("Bird says: 'The name is Bob.'", 12000);
+    speechBoxFill("Bob says: 'And what is yours?'", 15000);
+    speechBoxFill("Bob waits a few seconds in silence.", 18000);
+    speechBoxFill(`Bob says: 'Well, ${character.name} is an odd name-'`, 21000);
+    speechBoxFill("Bob says: 'but I've heard stranger...'", 24000);
+    speechBoxFill("", 27000);
+    speechBoxFill(`${character.name}, press the space bar to jump.`, 29000);
   };
-  if (doesCharCollideBirdLeft && !birdIntroDone) {
+  if (doesCharCollideBird && !birdIntroDone) {
     console.log("you hit the bird ");
-    character.xCoord -= 100;
+    character.speed = 0;
     setTimeout(birdShout, 200);
     birdIntroDone = true;
-  } else if (doesCharCollideBirdLeft) {
-    character.xCoord -= 100;
+    if ("ArrowLeft" in keyClick) {
+      character.speed = 0.5;
+    }
+  } else if (doesCharCollideBird) {
+    character.speed = 0;
+    if ("ArrowLeft" in keyClick) {
+      character.speed = 0.5;
+    }
   }
 }
 
 function characterJump() {
+  let jumpTimeout = 1000;
   character.yCoord = 345;
+  character.jumping = true;
   setTimeout(function () {
     character.yCoord = 378;
-  }, 400);
+    character.jumping = false;
+  }, jumpTimeout);
 }
 //jump handling
 
@@ -191,6 +240,17 @@ document.addEventListener("keydown", (event) => {
     characterJump();
   }
 });
+
+function playerJumpIntro() {
+  if (!jumpIntroDone && birdIntroDone && " " in keyClick) {
+    speechBoxFill("Bob says: 'Oh - you know how to jump now!'", 2000);
+    console.log("you jumped");
+    speechBoxFill("Bob says: 'I think you might be ready.'", 5000);
+    speechBoxFill("Bob says: 'I need someone nimble to help me-'", 8000);
+    speechBoxFill("Bob says: '-to find my treasure. Will you help?'", 11000);
+    jumpIntroDone = true;
+  }
+}
 
 document.addEventListener(
   "keyup",
@@ -211,6 +271,7 @@ function playGame() {
   characterMove();
   edgeCollisionDetect();
   birdCollisionDetect();
+  playerJumpIntro();
   render();
   requestAnimationFrame(playGame);
 }
@@ -243,11 +304,16 @@ function render() {
     character.width,
     character.height
   );
-  // context.fillStyle = "#CBC1AE";
-  // context.fillRect(100, 47.5, 300, 100);
-  // context.font = "22px sans-serif";
-  // context.fillStyle = "black";
-  // context.fillText("Hello", 105, 85);
+  context.fillStyle = "#CBC1AE";
+  context.fillRect(
+    speechbox.boxXCoord,
+    speechbox.boxYCoord,
+    speechbox.width,
+    speechbox.height
+  );
+  context.font = "16px georgia";
+  context.fillStyle = "black";
+  context.fillText(speechbox.text, speechbox.textXCoord, speechbox.textYCoord);
 }
 
 document.body.appendChild(canvas);
