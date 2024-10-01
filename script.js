@@ -1,3 +1,5 @@
+//notion notes
+
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
 canvas.height = 500;
@@ -189,6 +191,12 @@ function speechBoxFill(textString, timeoutLength) {
     speechbox.text = textString;
   }, timeoutLength);
 }
+// const defaultValueInFunction= (textLines, currentIndex=0,textTimeGap =3000)=>{
+// defaultValueInFunction(["hello"],1)
+// }
+// const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
+//   positionalFunction({currentIndex:1,textLines})
+// }
 
 function birdCollisionDetect() {
   const birdLeadingLeft = bird.xCoord - 15;
