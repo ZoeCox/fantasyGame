@@ -60,6 +60,12 @@ const charJumpRightFrameX = [
 ];
 // const charJumpRightFrameX = [74, 196, 518, 651, 907];
 
+const boundaries = {
+  floor: 446,
+  rightWall: canvas.width,
+  leftWall: 0,
+};
+
 const character = {
   source: characterIdle,
   frameX: charIdleFrameX[0],
@@ -74,10 +80,54 @@ const character = {
   movingLeft: false,
   movingRight: false,
   jumping: false,
-  name: undefined,
+  name: "",
+  nameArr: [],
 };
 // character.name = prompt("What is your name?");
 //IMPORTANT - REACTIVATE SOON
+const speechbox = {
+  text: "Type out your name and press enter -> ",
+  nameHolder: "Name (8 letters or less): ",
+  textXCoord: 80,
+  textYCoord: 100,
+  boxXCoord: 75,
+  boxYCoord: 47.5,
+  width: 350,
+  height: 100,
+};
+
+document.addEventListener("keydown", (event) => {
+  let keyPress;
+  if (
+    event.key !== "ArrowLeft" &&
+    event.key !== "ArrowRight" &&
+    event.key !== " " &&
+    event.key !== "Shift" &&
+    event.key !== "Backspace" &&
+    event.key !== "Enter" &&
+    event.key !== undefined
+  ) {
+    keyPress = event.key;
+  }
+  if (character.name.length > 7) {
+    speechbox.text = "Name is longer than 8 letters, please press F5.";
+    keyPress = "";
+  } else if (event.key === "Backspace") {
+    character.nameArr.pop();
+    console.log("The last character has been deleted");
+  }
+  character.nameArr.push(keyPress);
+  character.name = character.nameArr.join("");
+  console.log(typeof character.name, character.name);
+  if (event.key === "Enter" && !birdIntroDone && character.name.length < 9) {
+    speechbox.text = `${character.name}, use the arrow keys to go to the bird.`;
+    speechbox.nameHolder = "Name: ";
+    if (character.name.length <= 8) {
+      keyPress = "";
+    }
+  }
+});
+//name entering details
 
 const birdIdleLeftFrameX = [437, 487];
 const birdIdleLeftYVal = 129;
@@ -92,16 +142,6 @@ const bird = {
   width: 45,
   xCoord: 404,
   yCoord: 415,
-};
-
-const speechbox = {
-  text: "Use the arrow keys to approach the bird.",
-  textXCoord: 80,
-  textYCoord: 100,
-  boxXCoord: 75,
-  boxYCoord: 47.5,
-  width: 350,
-  height: 100,
 };
 
 function characterAnimate(arrFrame) {
@@ -164,8 +204,9 @@ function characterMove() {
 function edgeCollisionDetect() {
   const characterLeadingRight = character.xCoord + 30;
   const characterLeadingLeft = character.xCoord;
-  const doesCharCollideRightWall = characterLeadingRight >= canvas.width;
-  const doesCharCollideLeftWall = characterLeadingLeft <= 0;
+  const doesCharCollideRightWall =
+    characterLeadingRight >= boundaries.rightWall;
+  const doesCharCollideLeftWall = characterLeadingLeft <= boundaries.leftWall;
   if (doesCharCollideRightWall) {
     console.log("you've hit the right edge");
     character.speed = 0;
@@ -191,12 +232,6 @@ function speechBoxFill(textString, timeoutLength) {
     speechbox.text = textString;
   }, timeoutLength);
 }
-// const defaultValueInFunction= (textLines, currentIndex=0,textTimeGap =3000)=>{
-// defaultValueInFunction(["hello"],1)
-// }
-// const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
-//   positionalFunction({currentIndex:1,textLines})
-// }
 
 function birdCollisionDetect() {
   const birdLeadingLeft = bird.xCoord - 15;
@@ -237,6 +272,7 @@ function characterJump() {
   character.yCoord = 345;
   character.jumping = true;
   setTimeout(function () {
+    character.xCoord += 20;
     character.yCoord = 378;
     character.jumping = false;
   }, jumpTimeout);
@@ -322,6 +358,17 @@ function render() {
   context.font = "16px georgia";
   context.fillStyle = "black";
   context.fillText(speechbox.text, speechbox.textXCoord, speechbox.textYCoord);
+  context.font = "16px georgia";
+  context.fillStyle = "black";
+  context.fillText(`${speechbox.nameHolder}${character.name}`, 80, 125);
 }
 
 document.body.appendChild(canvas);
+
+//JAMES FUNCTION EXAMPLES:
+// const defaultValueInFunction= (textLines, currentIndex=0,textTimeGap =3000)=>{
+// defaultValueInFunction(["hello"],1)
+// }
+// const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
+//   positionalFunction({currentIndex:1,textLines})
+// }
