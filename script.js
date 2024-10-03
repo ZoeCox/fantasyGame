@@ -96,40 +96,50 @@ const speechbox = {
   height: 100,
 };
 
-document.addEventListener("keydown", (event) => {
-  let keyPress;
-  if (event.key === "Backspace") {
-    character.nameArr.pop();
-    console.log("The last character has been deleted");
-    return;
-  }
-  if (character.name.length > 7) {
-    speechbox.text = "Name is longer than 8 letters, please press F5.";
-    keyPress = "";
-  }
-  if (
-    event.key !== "ArrowLeft" &&
-    event.key !== "ArrowRight" &&
-    event.key !== " " &&
-    event.key !== "Shift" &&
-    event.key !== "Backspace" &&
-    event.key !== "Enter" &&
-    event.key !== undefined
-  ) {
-    keyPress = event.key;
-  }
-  character.nameArr.push(keyPress);
-  character.name = character.nameArr.join("");
-  console.log(typeof character.name, character.name);
-  if (event.key === "Enter" && !birdIntroDone && character.name.length < 9) {
-    speechbox.text = `${character.name}, use the arrow keys to go to the bird.`;
-    speechbox.nameHolder = "Name: ";
-    if (character.name.length <= 8) {
-      keyPress = "";
+let keyPress;
+
+const nameInput = document.addEventListener(
+  "keydown",
+  function nameCapture(event) {
+    if (
+      event.key === "ArrowLeft" ||
+      event.key === "ArrowRight" ||
+      event.key === " " ||
+      event.key === "Shift" ||
+      event.key === "Backspace" ||
+      event.key === undefined
+    ) {
+      return;
+    } else if (event.key !== "Enter") {
+      keyPress = event.key;
+      character.nameArr.push(keyPress);
+      character.name = character.nameArr.join("");
     }
+    if (character.name.length > 7) {
+      speechbox.text = "Name is longer than 8 letters, please press F5.";
+      keyPress = "";
+    } else if (character.name.length < 9) {
+      speechbox.text = "Type out your name and press enter ->";
+    }
+    if (event.key === "Enter" && !birdIntroDone && character.name.length < 9) {
+      speechbox.text = `${character.name}, use the arrow keys to go to the bird.`;
+      speechbox.nameHolder = "Name: ";
+    }
+    console.log(typeof character.name, character.name);
+  }
+);
+//name entering details
+
+//  removeEventListener(nameInput, nameCapture);
+
+const backSpacer = document.addEventListener("keydown", (event) => {
+  if (event.key === "Backspace" && character.nameArr.length > 0) {
+    character.name = character.name.slice(0, -1);
+    // character.nameArr.pop();
+    keyPress = "";
+    console.log("The last character has been deleted");
   }
 });
-//name entering details
 
 const birdIdleLeftFrameX = [437, 487];
 const birdIdleLeftYVal = 129;
@@ -183,7 +193,7 @@ birdAnimate(0);
 
 const keyClick = {};
 
-document.addEventListener(
+const moveInput = document.addEventListener(
   "keydown",
   function (event) {
     keyClick[event.key] = true;
@@ -281,7 +291,7 @@ function characterJump() {
 }
 //jump handling
 
-document.addEventListener("keydown", (event) => {
+const jumpInput = document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
     characterJump();
   }
@@ -298,7 +308,7 @@ function playerJumpIntro() {
   }
 }
 
-document.addEventListener(
+const moveRelease = document.addEventListener(
   "keyup",
   function (event) {
     delete keyClick[event.key];
