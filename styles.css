@@ -11,6 +11,6 @@ body {
 
 canvas {
   border: 0.5em solid black;
-  height: 55vw;
-  width: 55vw;
+  height: 35vw;
+  width: 35vw;
 }

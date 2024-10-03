@@ -98,6 +98,15 @@ const speechbox = {
 
 document.addEventListener("keydown", (event) => {
   let keyPress;
+  if (event.key === "Backspace") {
+    character.nameArr.pop();
+    console.log("The last character has been deleted");
+    return;
+  }
+  if (character.name.length > 7) {
+    speechbox.text = "Name is longer than 8 letters, please press F5.";
+    keyPress = "";
+  }
   if (
     event.key !== "ArrowLeft" &&
     event.key !== "ArrowRight" &&
@@ -108,13 +117,6 @@ document.addEventListener("keydown", (event) => {
     event.key !== undefined
   ) {
     keyPress = event.key;
-  }
-  if (character.name.length > 7) {
-    speechbox.text = "Name is longer than 8 letters, please press F5.";
-    keyPress = "";
-  } else if (event.key === "Backspace") {
-    character.nameArr.pop();
-    console.log("The last character has been deleted");
   }
   character.nameArr.push(keyPress);
   character.name = character.nameArr.join("");
