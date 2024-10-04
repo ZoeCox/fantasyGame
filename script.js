@@ -7,15 +7,7 @@ canvas.width = 500;
 
 const footstepSound = document.querySelector(".footstep-sound");
 
-// const treeBackground = new Image();
-// treeBackground.ready = false;
-// treeBackground.onload = checkIfReady;
-// treeBackground.src = "./backGround/treeBackground.png";
-
-// const winterBackground = new Image();
-// winterBackground.ready = false;
-// winterBackground.onload = checkIfReady;
-// winterBackground.src = "./backGround/winterBackground.gif";
+let nameInputDone = false;
 
 const hillBackground = new Image();
 hillBackground.ready = false;
@@ -81,13 +73,11 @@ const character = {
   movingRight: false,
   jumping: false,
   name: "",
-  nameArr: [],
 };
-// character.name = prompt("What is your name?");
-//IMPORTANT - REACTIVATE SOON
+
 const speechbox = {
-  text: "Type out your name and press enter -> ",
-  nameHolder: "Name (8 letters or less): ",
+  text: "Type out your name and press 'enter' ",
+  nameHolder: `Name (8 letters or less): ${character.name}`,
   textXCoord: 80,
   textYCoord: 100,
   boxXCoord: 75,
@@ -96,50 +86,69 @@ const speechbox = {
   height: 100,
 };
 
-let keyPress;
+const keyExceptionArr = [
+  "ArrowLeft",
+  "ArrowRight",
+  " ",
+  "Shift",
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6",
+  "F7",
+  "F8",
+  "F9",
+  "F10",
+  "F11",
+  "F12",
+  "Control",
+  "CapsLock",
+  undefined,
+];
 
 const nameInput = document.addEventListener(
   "keydown",
   function nameCapture(event) {
-    if (
-      event.key === "ArrowLeft" ||
-      event.key === "ArrowRight" ||
-      event.key === " " ||
-      event.key === "Shift" ||
-      event.key === "Backspace" ||
-      event.key === undefined
-    ) {
-      return;
-    } else if (event.key !== "Enter") {
-      keyPress = event.key;
-      character.nameArr.push(keyPress);
-      character.name = character.nameArr.join("");
-    }
-    if (character.name.length > 7) {
-      speechbox.text = "Name is longer than 8 letters, please press F5.";
+    let keyPress;
+    keyPress = event.key;
+    if (keyPress === "Backspace") {
+      character.name = character.name.substring(0, character.name.length - 1);
       keyPress = "";
-    } else if (character.name.length < 9) {
-      speechbox.text = "Type out your name and press enter ->";
+      return;
     }
-    if (event.key === "Enter" && !birdIntroDone && character.name.length < 9) {
+    for (let i = 0; i < keyExceptionArr.length; i++) {
+      if (keyPress === keyExceptionArr[i]) {
+        return;
+      }
+    }
+    if (
+      keyPress !== "Enter" &&
+      character.name.length <= 8 &&
+      !bird.birdIntroDone &&
+      !nameInputDone
+    ) {
+      character.name += keyPress;
+    }
+    if (character.name.length > 8) {
+      speechbox.text = "Name is longer than 8 letters, please backspace.";
+      keyPress = "";
+    }
+    if (
+      keyPress === "Enter" &&
+      !bird.birdIntroDone &&
+      character.name.length <= 8
+    ) {
       speechbox.text = `${character.name}, use the arrow keys to go to the bird.`;
-      speechbox.nameHolder = "Name: ";
+      nameInputDone = true;
     }
-    console.log(typeof character.name, character.name);
   }
 );
+// if (bird.birdIntroDone) {
+//   removeEventListener(nameInput, nameCapture);
+// }
 //name entering details
-
-//  removeEventListener(nameInput, nameCapture);
-
-const backSpacer = document.addEventListener("keydown", (event) => {
-  if (event.key === "Backspace" && character.nameArr.length > 0) {
-    character.name = character.name.slice(0, -1);
-    // character.nameArr.pop();
-    keyPress = "";
-    console.log("The last character has been deleted");
-  }
-});
 
 const birdIdleLeftFrameX = [437, 487];
 const birdIdleLeftYVal = 129;
@@ -154,6 +163,9 @@ const bird = {
   width: 45,
   xCoord: 404,
   yCoord: 415,
+  speed: 0.15,
+  birdIntroDone: false,
+  jumpIntroDone: false,
 };
 
 function characterAnimate(arrFrame) {
@@ -190,6 +202,11 @@ function birdAnimate(arrFrame) {
   setTimeout(() => birdAnimate(nextAnimateFrame), animationTime);
 }
 birdAnimate(0);
+
+function birdFlight() {
+  bird.xCoord -= bird.speed;
+  bird.yCoord -= bird.speed;
+}
 
 const keyClick = {};
 
@@ -236,9 +253,6 @@ function edgeCollisionDetect() {
   //edge detection
 }
 
-let birdIntroDone = false;
-let jumpIntroDone = false;
-
 function speechBoxFill(textString, timeoutLength) {
   setTimeout(() => {
     speechbox.text = textString;
@@ -263,11 +277,11 @@ function birdCollisionDetect() {
     speechBoxFill("", 27000);
     speechBoxFill(`${character.name}, press the space bar to jump.`, 29000);
   };
-  if (doesCharCollideBird && !birdIntroDone) {
+  if (doesCharCollideBird && !bird.birdIntroDone && nameInputDone) {
     console.log("you hit the bird ");
     character.speed = 0;
     setTimeout(birdShout, 200);
-    birdIntroDone = true;
+    bird.birdIntroDone = true;
     if ("ArrowLeft" in keyClick) {
       character.speed = 0.5;
     }
@@ -276,6 +290,34 @@ function birdCollisionDetect() {
     if ("ArrowLeft" in keyClick) {
       character.speed = 0.5;
     }
+  }
+}
+
+function playerJumpIntro() {
+  if (!bird.jumpIntroDone && bird.birdIntroDone && " " in keyClick) {
+    speechBoxFill("Bob says: 'Oh - you know how to jump now!'", 2000);
+    speechBoxFill("Bob says: 'I think you might be ready.'", 5000);
+    speechBoxFill("Bob says: 'I need someone nimble to help me-'", 8000);
+    speechBoxFill("Bob says: '-to find my treasure. Will you help?'", 11000);
+    speechBoxFill("Press 'enter' if you want to help.", 14000);
+    if ("Enter" in keyClick) {
+      console.log("They pressed enter");
+      speechBoxFill(
+        `Bob says: 'Thank you for your bravery, ${character.name}'`,
+        2000
+      );
+      speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 5000);
+      speechBoxFill(`${character.name}, follow the sign to the forest`, 8000);
+      setTimeout(() => {
+        bird.jumpIntroDone = true;
+      }, 11000);
+    }
+    // speechBoxFill(
+    //   `Bob says: 'Thank you for your bravery, ${character.name}'`,
+    //   17000
+    // );
+    // speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 20000);
+    // speechBoxFill(`${character.name}, follow the sign to the forest`, 23000);
   }
 }
 
@@ -297,17 +339,6 @@ const jumpInput = document.addEventListener("keydown", (event) => {
   }
 });
 
-function playerJumpIntro() {
-  if (!jumpIntroDone && birdIntroDone && " " in keyClick) {
-    speechBoxFill("Bob says: 'Oh - you know how to jump now!'", 2000);
-    console.log("you jumped");
-    speechBoxFill("Bob says: 'I think you might be ready.'", 5000);
-    speechBoxFill("Bob says: 'I need someone nimble to help me-'", 8000);
-    speechBoxFill("Bob says: '-to find my treasure. Will you help?'", 11000);
-    jumpIntroDone = true;
-  }
-}
-
 const moveRelease = document.addEventListener(
   "keyup",
   function (event) {
@@ -328,6 +359,9 @@ function playGame() {
   edgeCollisionDetect();
   birdCollisionDetect();
   playerJumpIntro();
+  if (bird.jumpIntroDone) {
+    birdFlight();
+  }
   render();
   requestAnimationFrame(playGame);
 }
@@ -372,7 +406,11 @@ function render() {
   context.fillText(speechbox.text, speechbox.textXCoord, speechbox.textYCoord);
   context.font = "16px georgia";
   context.fillStyle = "black";
-  context.fillText(`${speechbox.nameHolder}${character.name}`, 80, 125);
+  let nameText = speechbox.nameHolder + character.name;
+  if (nameInputDone) {
+    nameText = "";
+  }
+  context.fillText(nameText, 80, 125);
 }
 
 document.body.appendChild(canvas);
@@ -384,3 +422,13 @@ document.body.appendChild(canvas);
 // const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
 //   positionalFunction({currentIndex:1,textLines})
 // }
+
+// const treeBackground = new Image();
+// treeBackground.ready = false;
+// treeBackground.onload = checkIfReady;
+// treeBackground.src = "./backGround/treeBackground.png";
+
+// const winterBackground = new Image();
+// winterBackground.ready = false;
+// winterBackground.onload = checkIfReady;
+// winterBackground.src = "./backGround/winterBackground.gif";
