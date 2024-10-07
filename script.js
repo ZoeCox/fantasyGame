@@ -300,24 +300,27 @@ function playerJumpIntro() {
     speechBoxFill("Bob says: 'I need someone nimble to help me-'", 8000);
     speechBoxFill("Bob says: '-to find my treasure. Will you help?'", 11000);
     speechBoxFill("Press 'enter' if you want to help.", 14000);
-    if ("Enter" in keyClick) {
-      console.log("They pressed enter");
-      speechBoxFill(
-        `Bob says: 'Thank you for your bravery, ${character.name}'`,
-        2000
-      );
-      speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 5000);
-      speechBoxFill(`${character.name}, follow the sign to the forest`, 8000);
-      setTimeout(() => {
-        bird.jumpIntroDone = true;
-      }, 11000);
-    }
-    // speechBoxFill(
-    //   `Bob says: 'Thank you for your bravery, ${character.name}'`,
-    //   17000
-    // );
-    // speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 20000);
-    // speechBoxFill(`${character.name}, follow the sign to the forest`, 23000);
+    // if ("Enter" in keyClick) {
+    //   console.log("They pressed enter");
+    //   speechBoxFill(
+    //     `Bob says: 'Thank you for your bravery, ${character.name}'`,
+    //     2000
+    //   );
+    //   speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 5000);
+    //   speechBoxFill(`${character.name}, follow the sign to the forest`, 8000);
+    //   setTimeout(() => {
+    //     bird.jumpIntroDone = true;
+    //   }, 11000);
+    // }
+    speechBoxFill(
+      `Bob says: 'Thank you for your bravery, ${character.name}'`,
+      17000
+    );
+    speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 20000);
+    speechBoxFill(`${character.name}, follow the sign to the forest`, 23000);
+    setTimeout(() => {
+      bird.jumpIntroDone = true;
+    }, 25000);
   }
 }
 
