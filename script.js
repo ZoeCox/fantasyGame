@@ -1,5 +1,3 @@
-//notion notes
-
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
 canvas.height = 500;
@@ -8,11 +6,22 @@ canvas.width = 500;
 const footstepSound = document.querySelector(".footstep-sound");
 
 let nameInputDone = false;
+let tutorialComplete = false;
 
 const hillBackground = new Image();
 hillBackground.ready = false;
 hillBackground.onload = checkIfReady;
 hillBackground.src = "./backGround/hillBackground.png";
+
+const treeBackground = new Image();
+treeBackground.ready = false;
+treeBackground.onload = checkIfReady;
+treeBackground.src = "./backGround/treeBackground.png";
+
+const forestSign = new Image();
+forestSign.ready = false;
+forestSign.onload = checkIfReady;
+forestSign.src = "./backGround/forestSign.png";
 
 const birdRight = new Image();
 birdRight.ready = false;
@@ -44,19 +53,33 @@ characterJumpRight.ready = false;
 characterJumpRight.onload = checkIfReady;
 characterJumpRight.src = "./characterSprite/characterJumpRight.png";
 
+const boundaries = {
+  floor: 446,
+  rightWall: canvas.width,
+  leftWall: 0,
+};
+
+const backGround = {
+  source: hillBackground,
+  xCoord: 0,
+  yCoord: 0,
+  width: 800,
+  height: 500,
+};
+
+const forestSignpost = {
+  xCoord: 435,
+  yCoord: 405,
+  width: 70,
+  height: 70,
+};
+
 const charIdleFrameX = [0, 64, 128, 192];
 const charRunRightFrameX = [25, 105, 185, 270, 345, 425, 510, 590];
 const charRunLeftFrameX = [579, 499, 419, 339, 258, 179, 97, 18];
 const charJumpRightFrameX = [
   11, 74, 139, 196, 259, 325, 390, 455, 518, 585, 651, 714, 780, 843, 907,
 ];
-// const charJumpRightFrameX = [74, 196, 518, 651, 907];
-
-const boundaries = {
-  floor: 446,
-  rightWall: canvas.width,
-  leftWall: 0,
-};
 
 const character = {
   source: characterIdle,
@@ -74,6 +97,77 @@ const character = {
   jumping: false,
   name: "",
 };
+
+function characterAnimate(arrFrame) {
+  let directionArr;
+  if (character.movingLeft) {
+    character.source = characterRunLeft;
+    directionArr = charRunLeftFrameX;
+  } else if (character.movingRight) {
+    character.source = characterRunRight;
+    directionArr = charRunRightFrameX;
+  } else if (character.jumping) {
+    character.source = characterJumpRight;
+    directionArr = charJumpRightFrameX;
+  } else {
+    character.source = characterIdle;
+    directionArr = charIdleFrameX;
+  }
+  const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
+  character.frameX = directionArr[checkedNextFrame];
+  const nextAnimateFrame = checkedNextFrame + 1;
+  let animationTime = 1600 / directionArr.length;
+  if (directionArr === charJumpRightFrameX) {
+    animationTime = 1500 / directionArr.length;
+  }
+  setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
+}
+characterAnimate(0);
+
+const birdIdleLeftFrameX = [437, 487];
+const birdIdleLeftYVal = 129;
+const birdFlyLeftFrameX = [339, 287, 239];
+const birdFlyLeftYVal = 160;
+
+const bird = {
+  source: birdLeft,
+  frameX: birdIdleLeftFrameX[0],
+  frameY: birdIdleLeftYVal,
+  sourceWidth: 45,
+  sourceHeight: 35,
+  height: 40,
+  width: 45,
+  xCoord: 403,
+  yCoord: 415,
+  speed: 0.15,
+  birdIntroDone: false,
+  jumpIntroDone: false,
+};
+
+function birdAnimate(arrFrame) {
+  let directionArr;
+  if (bird.jumpIntroDone) {
+    bird.frameY = birdFlyLeftYVal;
+    directionArr = birdFlyLeftFrameX;
+  } else {
+    directionArr = birdIdleLeftFrameX;
+    bird.frameY = birdIdleLeftYVal;
+  }
+  const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
+  bird.frameX = directionArr[checkedNextFrame];
+  const nextAnimateFrame = checkedNextFrame + 1;
+  let animationTime = 1175 / directionArr.length;
+  setTimeout(() => birdAnimate(nextAnimateFrame), animationTime);
+}
+birdAnimate(0);
+
+function birdFlight() {
+  bird.xCoord -= bird.speed;
+  bird.yCoord -= bird.speed;
+  if (bird.xCoord < -50) {
+    bird.speed = 0;
+  }
+}
 
 const speechbox = {
   text: "Type out your name and press 'enter' ",
@@ -150,64 +244,6 @@ const nameInput = document.addEventListener(
 // }
 //name entering details
 
-const birdIdleLeftFrameX = [437, 487];
-const birdIdleLeftYVal = 129;
-
-const bird = {
-  source: birdLeft,
-  frameX: birdIdleLeftFrameX[0],
-  frameY: birdIdleLeftYVal,
-  sourceWidth: 45,
-  sourceHeight: 35,
-  height: 44,
-  width: 45,
-  xCoord: 404,
-  yCoord: 415,
-  speed: 0.15,
-  birdIntroDone: false,
-  jumpIntroDone: false,
-};
-
-function characterAnimate(arrFrame) {
-  let directionArr;
-  if (character.movingLeft) {
-    character.source = characterRunLeft;
-    directionArr = charRunLeftFrameX;
-  } else if (character.movingRight) {
-    character.source = characterRunRight;
-    directionArr = charRunRightFrameX;
-  } else if (character.jumping) {
-    character.source = characterJumpRight;
-    directionArr = charJumpRightFrameX;
-  } else {
-    character.source = characterIdle;
-    directionArr = charIdleFrameX;
-  }
-  const checkedNextFrame = arrFrame < directionArr.length ? arrFrame : 0;
-  character.frameX = directionArr[checkedNextFrame];
-  const nextAnimateFrame = checkedNextFrame + 1;
-  let animationTime = 1600 / directionArr.length;
-  if (directionArr === charJumpRightFrameX) {
-    animationTime = 1500 / directionArr.length;
-  }
-  setTimeout(() => characterAnimate(nextAnimateFrame), animationTime);
-}
-characterAnimate(0);
-
-function birdAnimate(arrFrame) {
-  const checkedNextFrame = arrFrame < birdIdleLeftFrameX.length ? arrFrame : 0;
-  bird.frameX = birdIdleLeftFrameX[checkedNextFrame];
-  const nextAnimateFrame = checkedNextFrame + 1;
-  const animationTime = 1175 / birdIdleLeftFrameX.length;
-  setTimeout(() => birdAnimate(nextAnimateFrame), animationTime);
-}
-birdAnimate(0);
-
-function birdFlight() {
-  bird.xCoord -= bird.speed;
-  bird.yCoord -= bird.speed;
-}
-
 const keyClick = {};
 
 const moveInput = document.addEventListener(
@@ -237,21 +273,19 @@ function edgeCollisionDetect() {
     characterLeadingRight >= boundaries.rightWall;
   const doesCharCollideLeftWall = characterLeadingLeft <= boundaries.leftWall;
   if (doesCharCollideRightWall) {
-    console.log("you've hit the right edge");
     character.speed = 0;
     if ("ArrowLeft" in keyClick) {
       character.speed = 0.5;
     }
   }
   if (doesCharCollideLeftWall) {
-    console.log("you've hit the left edge");
     character.speed = 0;
     if ("ArrowRight" in keyClick) {
       character.speed = 0.5;
     }
   }
-  //edge detection
 }
+//edge detection
 
 function speechBoxFill(textString, timeoutLength) {
   setTimeout(() => {
@@ -260,10 +294,16 @@ function speechBoxFill(textString, timeoutLength) {
 }
 
 function birdCollisionDetect() {
+  const characterLeadingRight = character.xCoord + 50;
+  const characterLeadingLeft = character.xCoord;
+  const doesCharCollideRightWall =
+    characterLeadingRight >= boundaries.rightWall;
+  const doesCharCollideLeftWall = characterLeadingLeft <= boundaries.leftWall;
+  //fix this mess of additional variables into something more organised
+  //does this need to be duplicated across two different functions???
   const birdLeadingLeft = bird.xCoord - 15;
-  const charLeadingRight = character.xCoord + 50;
-  const doesCharCollideBird =
-    charLeadingRight >= birdLeadingLeft && character.xCoord <= bird.yCoord * 2;
+  // const birdTop = bird.yCoord + bird.width;
+  const doesCharCollideBird = characterLeadingRight >= birdLeadingLeft;
   const birdShout = () => {
     speechbox.text = "Bird says: 'Ow! You hit me!'";
     speechBoxFill("Bird says: 'That wasn't very polite...'", 3000);
@@ -278,7 +318,6 @@ function birdCollisionDetect() {
     speechBoxFill(`${character.name}, press the space bar to jump.`, 29000);
   };
   if (doesCharCollideBird && !bird.birdIntroDone && nameInputDone) {
-    console.log("you hit the bird ");
     character.speed = 0;
     setTimeout(birdShout, 200);
     bird.birdIntroDone = true;
@@ -287,7 +326,14 @@ function birdCollisionDetect() {
     }
   } else if (doesCharCollideBird) {
     character.speed = 0;
-    if ("ArrowLeft" in keyClick) {
+    if ("ArrowLeft" in keyClick && !doesCharCollideLeftWall) {
+      character.speed = 0.5;
+    }
+    if (
+      "ArrowRight" in keyClick &&
+      bird.jumpIntroDone &&
+      !doesCharCollideRightWall
+    ) {
       character.speed = 0.5;
     }
   }
@@ -300,27 +346,17 @@ function playerJumpIntro() {
     speechBoxFill("Bob says: 'I need someone nimble to help me-'", 8000);
     speechBoxFill("Bob says: '-to find my treasure. Will you help?'", 11000);
     speechBoxFill("Press 'enter' if you want to help.", 14000);
-    // if ("Enter" in keyClick) {
-    //   console.log("They pressed enter");
-    //   speechBoxFill(
-    //     `Bob says: 'Thank you for your bravery, ${character.name}'`,
-    //     2000
-    //   );
-    //   speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 5000);
-    //   speechBoxFill(`${character.name}, follow the sign to the forest`, 8000);
-    //   setTimeout(() => {
-    //     bird.jumpIntroDone = true;
-    //   }, 11000);
-    // }
+  }
+  if ("Enter" in keyClick && bird.birdIntroDone && !bird.jumpIntroDone) {
     speechBoxFill(
       `Bob says: 'Thank you for your bravery, ${character.name}'`,
-      17000
+      1000
     );
-    speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 20000);
-    speechBoxFill(`${character.name}, follow the sign to the forest`, 23000);
+    speechBoxFill("Bob says: 'Goodbye, I will see you again soon...'", 5000);
     setTimeout(() => {
       bird.jumpIntroDone = true;
-    }, 25000);
+    }, 7000);
+    speechBoxFill(`${character.name}, follow the sign to the forest`, 8000);
   }
 }
 
@@ -329,18 +365,27 @@ function characterJump() {
   character.yCoord = 345;
   character.jumping = true;
   setTimeout(function () {
-    character.xCoord += 20;
+    // character.xCoord += 20;
     character.yCoord = 378;
     character.jumping = false;
   }, jumpTimeout);
 }
-//jump handling
 
 const jumpInput = document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
     characterJump();
   }
 });
+//jump handling
+
+function forestTransition() {
+  backGround.source = treeBackground;
+  character.xCoord = 50;
+  character.yCoord = 374;
+  forestSignpost.xCoord = -150;
+  speechbox.text = "You have completed the tutorial";
+  tutorialComplete = true;
+}
 
 const moveRelease = document.addEventListener(
   "keyup",
@@ -365,6 +410,13 @@ function playGame() {
   if (bird.jumpIntroDone) {
     birdFlight();
   }
+  if (
+    bird.jumpIntroDone &&
+    !tutorialComplete &&
+    character.xCoord + 50 >= canvas.width
+  ) {
+    forestTransition();
+  }
   render();
   requestAnimationFrame(playGame);
 }
@@ -372,8 +424,20 @@ function playGame() {
 function render() {
   context.fillStyle = "antiqueWhite";
   context.fillRect(0, 0, canvas.width, canvas.height);
-
-  context.drawImage(hillBackground, 0, 0, 800, 500);
+  context.drawImage(
+    backGround.source,
+    backGround.xCoord,
+    backGround.yCoord,
+    backGround.width,
+    backGround.height
+  );
+  context.drawImage(
+    forestSign,
+    forestSignpost.xCoord,
+    forestSignpost.yCoord,
+    forestSignpost.width,
+    forestSignpost.height
+  );
   context.drawImage(
     bird.source,
     bird.frameX,
@@ -425,11 +489,6 @@ document.body.appendChild(canvas);
 // const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
 //   positionalFunction({currentIndex:1,textLines})
 // }
-
-// const treeBackground = new Image();
-// treeBackground.ready = false;
-// treeBackground.onload = checkIfReady;
-// treeBackground.src = "./backGround/treeBackground.png";
 
 // const winterBackground = new Image();
 // winterBackground.ready = false;
