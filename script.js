@@ -267,6 +267,51 @@ function characterMove() {
   //left and right movement
 }
 
+let spaceKeyReleased = false;
+
+function jumpTravel() {
+  character.xCoord += 10;
+  character.yCoord += 10;
+  setTimeout(() => {
+    character.xCoord += 10;
+    character.yCoord -= 10;
+  }, 50);
+}
+
+function characterJump() {
+  spaceKeyReleased = false;
+  character.yCoord = 345;
+  jumpTravel();
+  character.jumping = true;
+  if (character.jumping) {
+    document.removeEventListener("keydown", keyCapture);
+    character.speed = 0;
+  }
+  setTimeout(function () {
+    character.yCoord = 378;
+    character.jumping = false;
+    if (!character.jumping) {
+      document.addEventListener("keydown", keyCapture);
+      character.speed = 0.5;
+    }
+  }, 900);
+}
+function jumpTrigger(event) {
+  if (event.key === " " && spaceKeyReleased) {
+    characterJump();
+  }
+}
+
+document.addEventListener("keydown", jumpTrigger);
+
+function spaceBarRelease(event) {
+  if (event.key === " ") {
+    setTimeout(() => (spaceKeyReleased = true), 200);
+  }
+}
+document.addEventListener("keyup", spaceBarRelease);
+//jump handling
+
 function edgeCollisionDetect() {
   const characterLeadingRight = character.xCoord + 30;
   const characterLeadingLeft = character.xCoord;
@@ -361,41 +406,15 @@ function playerJumpIntro() {
   }
 }
 
-let spaceKeyReleased = false;
-
-function characterJump() {
-  spaceKeyReleased = false;
-  character.yCoord = 345;
-  character.jumping = true;
-  if (character.jumping) {
-    document.removeEventListener("keydown", keyCapture);
-    character.speed = 0;
-  }
-  setTimeout(function () {
-    character.yCoord = 378;
-    character.jumping = false;
-    if (!character.jumping) {
-      document.addEventListener("keydown", keyCapture);
-      character.speed = 0.5;
-    }
-  }, 1000);
+function keyRelease(event) {
+  delete keyClick[event.key];
+  character.movingRight = false;
+  character.movingLeft = false;
+  document.addEventListener("keydown", jumpTrigger);
 }
 
-function jumpTrigger(event) {
-  if (event.key === " " && spaceKeyReleased) {
-    characterJump();
-  }
-}
-
-document.addEventListener("keydown", jumpTrigger);
-
-function spaceBarRelease(event) {
-  if (event.key === " ") {
-    setTimeout(() => (spaceKeyReleased = true), 200);
-  }
-}
-document.addEventListener("keyup", spaceBarRelease);
-//jump handling
+document.addEventListener("keyup", keyRelease, false);
+//key release/clearing
 
 function forestTransition() {
   backGround.source = treeBackground;
@@ -406,15 +425,15 @@ function forestTransition() {
   tutorialComplete = true;
 }
 
-function keyRelease(event) {
-  delete keyClick[event.key];
-  character.movingRight = false;
-  character.movingLeft = false;
-  document.addEventListener("keydown", jumpTrigger);
+function backGroundScroll() {
+  if (character.xCoord >= 250 && character.movingRight) {
+    backGround.xCoord += 0.075;
+  } else if (character.xCoord <= 249 && character.movingLeft) {
+    backGround.xCoord -= 0.075;
+  } else {
+    backGround.xCoord = backGround.xCoord;
+  }
 }
-
-document.addEventListener("keyup", keyRelease, false);
-//key release/clearing
 
 function checkIfReady() {
   this.ready = true;
@@ -436,6 +455,7 @@ function playGame() {
   ) {
     forestTransition();
   }
+  backGroundScroll();
   render();
   requestAnimationFrame(playGame);
 }
