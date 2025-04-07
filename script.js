@@ -421,18 +421,8 @@ function forestTransition() {
   character.xCoord = 50;
   character.yCoord = 374;
   forestSignpost.xCoord = -150;
-  speechbox.text = "You have completed the tutorial";
+  speechbox.text = "You have completed the demo";
   tutorialComplete = true;
-}
-
-function backGroundScroll() {
-  if (character.xCoord >= 250 && character.movingRight) {
-    backGround.xCoord += 0.075;
-  } else if (character.xCoord <= 249 && character.movingLeft) {
-    backGround.xCoord -= 0.075;
-  } else {
-    backGround.xCoord = backGround.xCoord;
-  }
 }
 
 function checkIfReady() {
@@ -455,7 +445,6 @@ function playGame() {
   ) {
     forestTransition();
   }
-  backGroundScroll();
   render();
   requestAnimationFrame(playGame);
 }
@@ -520,16 +509,3 @@ function render() {
 }
 
 document.body.appendChild(canvas);
-
-//JAMES FUNCTION EXAMPLES:
-// const defaultValueInFunction= (textLines, currentIndex=0,textTimeGap =3000)=>{
-// defaultValueInFunction(["hello"],1)
-// }
-// const positionalFunction = ({textLines,textTimeGap=3000,currentIndex=0})=>{
-//   positionalFunction({currentIndex:1,textLines})
-// }
-
-// const winterBackground = new Image();
-// winterBackground.ready = false;
-// winterBackground.onload = checkIfReady;
-// winterBackground.src = "./backGround/winterBackground.gif";
